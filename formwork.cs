@@ -37,8 +37,9 @@ namespace WpfControlLibrary1
                         BoundingBoxXYZ boundingBox = ele.get_BoundingBox(null);
                         //Get Outline 
                         Outline outline = new Outline(boundingBox.Min, boundingBox.Max);
-                        BoundingBoxIntersectsFilter filter = new BoundingBoxIntersectsFilter(outline);   
-                        
+                        BoundingBoxIntersectsFilter filter = new BoundingBoxIntersectsFilter(outline);
+                        //BoundingBoxIntersectsFilter invertFilter = new BoundingBoxIntersectsFilter(outline,);
+
                         var eleIntersect = new FilteredElementCollector(doc)
                             .WhereElementIsNotElementType()
                             .WherePasses(filter)
