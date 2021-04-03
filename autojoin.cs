@@ -28,7 +28,7 @@ namespace WpfControlLibrary1
                     var outline = new Outline(boundingBox.Min, boundingBox.Max);
                     var filter = new BoundingBoxIntersectsFilter(outline);
 
-                    var collectors = new FilteredElementCollector(doc)//.OfCategory(BuiltInCategory.OST_Floors)
+                    var collectors = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_StructuralFraming)
                         .WhereElementIsNotElementType()
                         .WherePasses(filter)
                         .ToElements();
@@ -43,7 +43,7 @@ namespace WpfControlLibrary1
                         }
                         else
                         {
-                            JoinGeometryUtils.JoinGeometry(doc, ele, item);
+                            JoinGeometryUtils.JoinGeometry(doc, ele, item);                            
                         }
                         //JoinGeometryUtils.SwitchJoinOrder(doc, ele, item);
                     }
