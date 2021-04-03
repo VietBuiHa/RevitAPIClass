@@ -26,23 +26,22 @@ namespace WpfControlLibrary1
                 {
                     var boundingBox = ele.get_BoundingBox(null);
                     var outline = new Outline(boundingBox.Min, boundingBox.Max);
-
                     var filter = new BoundingBoxIntersectsFilter(outline);
 
-                    var floors = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Floors)
+                    var collectors = new FilteredElementCollector(doc)//.OfCategory(BuiltInCategory.OST_Floors)
                         .WhereElementIsNotElementType()
                         .WherePasses(filter)
                         .ToElements();
 
-                    foreach (var item in floors)
+                    foreach (var item in collectors)
                     {
-                        var joined = JoinGeometryUtils.AreElementsJoined(doc, ele, item);
+                        var joined = JoinGeometryUtils.AreElementsJoined(doc, ele, item);       
                         if (joined == true)
-
-                            JoinGeometryUtils.UnjoinGeometry(doc, ele, item);
-                            JoinGeometryUtils.JoinGeometry(doc, ele, item);
-                            //JoinGeometryUtils.SwitchJoinOrder(doc, ele, item);
-                      
+                        {
+                            JoinGeometryUtils.UnjoinGeometry(doc, ele, item);                                            
+                        }
+                        JoinGeometryUtils.JoinGeometry(doc, ele, item);
+                        JoinGeometryUtils.SwitchJoinOrder(doc, ele, item);
                     }
                 }
                 tran.Commit();
