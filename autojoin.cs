@@ -28,13 +28,18 @@ namespace WpfControlLibrary1
                     var outline = new Outline(boundingBox.Min, boundingBox.Max);
                     var filter = new BoundingBoxIntersectsFilter(outline);
 
-                    var collectors = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_StructuralFraming)
+                    var collectors = new FilteredElementCollector(doc)//.OfCategory(BuiltInCategory.OST_StructuralFraming)
                         .WhereElementIsNotElementType()
                         .WherePasses(filter)
                         .ToElements();
 
                     foreach (var item in collectors)
                     {
+                        //Options options = new Options();
+                        //options.ComputeReferences = true;
+                        //options.DetailLevel = ViewDetailLevel.Fine;
+                        //GeometryElement geoElement = item.get_Geometry(options);                        
+
                         bool joined = JoinGeometryUtils.AreElementsJoined(doc, ele, item);       
                         if (joined == true)
                         {
