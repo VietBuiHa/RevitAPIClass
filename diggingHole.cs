@@ -17,6 +17,8 @@ namespace WpfControlLibrary1
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             var doc = commandData.Application.ActiveUIDocument.Document;
+            //var link = new FilteredElementCollector(doc).OfType<RevitLinkInstance>().FirstOrDefault(l => l.Name == "test.rvt");
+            //var linkdoc = link.GetLinkDocument();
             var foundations = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_StructuralFoundation)
                 .WhereElementIsNotElementType()
                 .ToElements();
@@ -37,11 +39,12 @@ namespace WpfControlLibrary1
                 using (Transaction tran = new Transaction(fdoc, "new Blend"))
                 {
                     tran.Start();
-                    var plan = Plane.CreateByNormalAndOrigin(botFace.FaceNormal, botFace.Origin);
+                    var plan = Plane.CreateByNormalAndOrigin(XYZ.BasisZ, botFace.Origin);
                     var sk = SketchPlane.Create(fdoc, plan);
                     var top = ConvertLoopToArray(offsetFace);
                     var baseface = ConvertLoopToArray(botFace.GetEdgesAsCurveLoops().FirstOrDefault());
-                    fdoc.FamilyCreate.NewBlend(false,top,baseface, null);
+                    var blend = fdoc.FamilyCreate.NewBlend(false,top,baseface, sk);
+                    blend.LookupParameter("Second End").Set(Math.Abs(blend.LookupParameter("Second End").AsDouble()));
                     //CreateBlend(fdoc, null);
                     tran.Commit();
                 }
@@ -61,83 +64,16 @@ namespace WpfControlLibrary1
             }
             return Result.Succeeded;
         }
-        private Blend CreateBlend(Document familyDocument, SketchPlane sketchPlane)
-        {
-            Blend blend = null;
-
-            if (true == familyDocument.IsFamilyDocument)
-            {
-                // Define top and base profiles for the blend
-                CurveArray topProfile = new CurveArray();
-                CurveArray baseProfile = new CurveArray();
-
-                // create rectangular base profile
-                XYZ p00 = XYZ.Zero;
-                XYZ p01 = new XYZ(10, 0, 0);
-                XYZ p02 = new XYZ(10, 10, 0);
-                XYZ p03 = new XYZ(0, 10, 0);
-                Line line01 = Line.CreateBound(p00, p01);
-                Line line02 = Line.CreateBound(p01, p02);
-                Line line03 = Line.CreateBound(p02, p03);
-                Line line04 = Line.CreateBound(p03, p00);
-
-                baseProfile.Append(line01);
-                baseProfile.Append(line02);
-                baseProfile.Append(line03);
-                baseProfile.Append(line04);
-
-                // create rectangular top profile
-                XYZ p10 = new XYZ(5, 2, 10);
-                XYZ p11 = new XYZ(8, 5, 10);
-                XYZ p12 = new XYZ(5, 8, 10);
-                XYZ p13 = new XYZ(2, 5, 10);
-                Line line11 = Line.CreateBound(p10, p11);
-                Line line12 = Line.CreateBound(p11, p12);
-                Line line13 = Line.CreateBound(p12, p13);
-                Line line14 = Line.CreateBound(p13, p10);
-
-                topProfile.Append(line11);
-                topProfile.Append(line12);
-                topProfile.Append(line13);
-                topProfile.Append(line14);
-
-                // now create solid rectangular blend
-                blend = familyDocument.FamilyCreate.NewBlend(true, topProfile, baseProfile, sketchPlane);
-
-                if (null != blend)
-                {
-                    // move to proper place
-                    XYZ transPoint1 = new XYZ(0, 11, 0);
-                    ElementTransformUtils.MoveElement(familyDocument, blend.Id, transPoint1);
-                }
-                else
-                {
-                    throw new Exception("Create new Blend failed.");
-                }
-            }
-            else
-            {
-                throw new Exception("Please open a Family document before invoking this command.");
-            }
-
-            return blend;
-        }
         private CurveArray ConvertLoopToArray(CurveLoop loop)
         {
             CurveArray a = new CurveArray();
             if (loop.IsCounterclockwise(XYZ.BasisZ))
             {
-                foreach (Curve c in loop)
-                {
-                    a.Append(c);
-                }
+                loop.Flip();
             }
-            else
+            foreach (Curve c in loop)
             {
-                foreach (Curve c in loop)
-                {
-                    a.Insert(c.CreateReversed(),0);
-                }
+                a.Append(c);
             }
 
             return a;
