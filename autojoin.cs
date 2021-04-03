@@ -38,10 +38,15 @@ namespace WpfControlLibrary1
                         var joined = JoinGeometryUtils.AreElementsJoined(doc, ele, item);       
                         if (joined == true)
                         {
-                            JoinGeometryUtils.UnjoinGeometry(doc, ele, item);                                            
+                            JoinGeometryUtils.UnjoinGeometry(doc, ele, item);
+                            JoinGeometryUtils.JoinGeometry(doc, ele, item);
+                            JoinGeometryUtils.SwitchJoinOrder(doc, ele, item);
                         }
-                        JoinGeometryUtils.JoinGeometry(doc, ele, item);
-                        JoinGeometryUtils.SwitchJoinOrder(doc, ele, item);
+                        else
+                        {
+                            JoinGeometryUtils.JoinGeometry(doc, ele, item);
+                            JoinGeometryUtils.SwitchJoinOrder(doc, ele, item);
+                        }
                     }
                 }
                 tran.Commit();
