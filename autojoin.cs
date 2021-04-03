@@ -35,23 +35,27 @@ namespace WpfControlLibrary1
 
                     foreach (var item in collectors)
                     {
-                        var joined = JoinGeometryUtils.AreElementsJoined(doc, ele, item);       
+                        bool joined = JoinGeometryUtils.AreElementsJoined(doc, ele, item);       
                         if (joined == true)
                         {
                             JoinGeometryUtils.UnjoinGeometry(doc, ele, item);
-                            JoinGeometryUtils.JoinGeometry(doc, ele, item);
-                            JoinGeometryUtils.SwitchJoinOrder(doc, ele, item);
+                            JoinGeometryUtils.JoinGeometry(doc, ele, item);                            
                         }
                         else
                         {
-                            JoinGeometryUtils.JoinGeometry(doc, ele, item);
-                            JoinGeometryUtils.SwitchJoinOrder(doc, ele, item);
+                            NewMethod(doc, ele, item);
                         }
+                        //JoinGeometryUtils.SwitchJoinOrder(doc, ele, item);
                     }
                 }
                 tran.Commit();
             }
             return Result.Succeeded;
+        }
+
+        private static void NewMethod(Document doc, Element ele, Element item)
+        {
+            JoinGeometryUtils.JoinGeometry(doc, ele, item);
         }
     }
 }
