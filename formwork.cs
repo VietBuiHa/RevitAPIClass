@@ -38,13 +38,28 @@ namespace WpfControlLibrary1
                         //Get Outline 
                         Outline outline = new Outline(boundingBox.Min, boundingBox.Max);
                         BoundingBoxIntersectsFilter filter = new BoundingBoxIntersectsFilter(outline);
-                        //BoundingBoxIntersectsFilter invertFilter = new BoundingBoxIntersectsFilter(outline,);
+                        //BoundingBoxIntersectsFilter invertFilter = new BoundingBoxIntersectsFilter(outline,true);
 
                         var eleIntersect = new FilteredElementCollector(doc)
                             .WhereElementIsNotElementType()
                             .WherePasses(filter)
                             .ToElements();
 
+                        foreach (var item in eleIntersect)
+                        {
+                            var joined = JoinGeometryUtils.AreElementsJoined(doc, ele, item);
+                            if (joined == true)
+                            {
+                                JoinGeometryUtils.UnjoinGeometry(doc, ele, item);
+                                JoinGeometryUtils.JoinGeometry(doc, ele, item);
+                                //JoinGeometryUtils.SwitchJoinOrder(doc, ele, item);
+                            }
+                            else
+                            {
+                                JoinGeometryUtils.JoinGeometry(doc, ele, item);
+                                //JoinGeometryUtils.SwitchJoinOrder(doc, ele, item);
+                            }
+                        }
                     }
                     tran.Commit();
                 }
