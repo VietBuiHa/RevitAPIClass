@@ -43,7 +43,7 @@ namespace WpfControlLibrary1
                         }
                         else
                         {
-                            NewMethod(doc, ele, item);
+                            JoinGeometryUtils.JoinGeometry(doc, ele, item);
                         }
                         //JoinGeometryUtils.SwitchJoinOrder(doc, ele, item);
                     }
@@ -51,11 +51,6 @@ namespace WpfControlLibrary1
                 tran.Commit();
             }
             return Result.Succeeded;
-        }
-
-        private static void NewMethod(Document doc, Element ele, Element item)
-        {
-            JoinGeometryUtils.JoinGeometry(doc, ele, item);
-        }
+        }       
     }
 }
