@@ -15,7 +15,6 @@ namespace WpfControlLibrary1
 
 
 
-
             return Result.Succeeded;
         }
     }
