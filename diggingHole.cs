@@ -78,7 +78,7 @@ namespace WpfControlLibrary1
 
             return a;
         }
-        private static IList<Solid> GetTargetSolids(Element element)
+        public static IList<Solid> GetTargetSolids(Element element)
         {
             List<Solid> solids = new List<Solid>();
 

@@ -75,6 +75,7 @@
     <Compile Include="command3.cs" />
     <Compile Include="diggingHole.cs" />
     <Compile Include="formwork.cs" />
+    <Compile Include="GetTargetSolid.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
