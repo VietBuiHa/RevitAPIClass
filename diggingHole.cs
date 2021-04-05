@@ -78,10 +78,9 @@ namespace WpfControlLibrary1
 
             return a;
         }
-        public static IList<Solid> GetTargetSolids(Element element)
+        private static IList<Solid> GetTargetSolids(Element element)
         {
             List<Solid> solids = new List<Solid>();
-
 
             Options options = new Options();
             options.DetailLevel = ViewDetailLevel.Fine;
@@ -117,6 +116,5 @@ namespace WpfControlLibrary1
             }
             return solids;
         }
-
     }
 }
