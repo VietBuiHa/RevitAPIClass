@@ -1,18 +1,18 @@
-﻿using Autodesk.Revit.Attributes;
-using Autodesk.Revit.DB;
-using Autodesk.Revit.UI;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Autodesk.Revit.Attributes;
+using Autodesk.Revit.DB;
+using Autodesk.Revit.UI;
 
 namespace WpfControlLibrary1
 {
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
-    class diggingHole : IExternalCommand
+    class diggingFoundation : IExternalCommand
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
@@ -38,7 +38,7 @@ namespace WpfControlLibrary1
                 var solid = solids.OrderByDescending(s => s.Volume).FirstOrDefault();
                 var botFace = solid.Faces.Cast<Face>().OfType<PlanarFace>().FirstOrDefault(f => Math.Round(f.FaceNormal.Z, 2) == -1);
                 var topFace = solid.Faces.Cast<Face>().OfType<PlanarFace>().FirstOrDefault(f => Math.Round(f.FaceNormal.Z, 2) == 1);
-                var offsetFace = CurveLoop.CreateViaOffset(topFace.GetEdgesAsCurveLoops().FirstOrDefault(),1,topFace.FaceNormal);
+                var offsetFace = CurveLoop.CreateViaOffset(topFace.GetEdgesAsCurveLoops().FirstOrDefault(), 1, topFace.FaceNormal);
 
                 var fdoc = commandData.Application.Application.NewFamilyDocument(@"C:\ProgramData\Autodesk\RVT 2020\Family Templates\English\Metric Generic Model.rft");
                 using (Transaction tran = new Transaction(fdoc, "new Blend"))
@@ -48,7 +48,7 @@ namespace WpfControlLibrary1
                     var sketchPlane = SketchPlane.Create(fdoc, plan);
                     var top = ConvertLoopToArray(offsetFace);
                     var baseface = ConvertLoopToArray(botFace.GetEdgesAsCurveLoops().FirstOrDefault());
-                    var blend = fdoc.FamilyCreate.NewBlend(true,top,baseface, sketchPlane);
+                    var blend = fdoc.FamilyCreate.NewBlend(true, top, baseface, sketchPlane);
                     blend.LookupParameter("Second End").Set(Math.Abs(blend.LookupParameter("Second End").AsDouble()));
                     //CreateBlend(fdoc, null);
                     tran.Commit();
@@ -56,7 +56,7 @@ namespace WpfControlLibrary1
                 fdoc.SaveAs($"{Path.GetTempPath()}{foundation.Id.ToString()}-{Guid.NewGuid().ToString()}.rfa");
                 Family family = fdoc.LoadFamily(doc);
                 fdoc.Close();
-                using (Transaction tran = new Transaction(doc,"new void"))
+                using (Transaction tran = new Transaction(doc, "new void"))
                 {
                     tran.Start();
                     //offsetFace.ToList().ForEach(f => doc.Create.NewModelCurve(f, SketchPlane.Create(doc, Plane.CreateByThreePoints(f.GetEndPoint(0), f.GetEndPoint(1), new XYZ(0, 0, 1)))));
