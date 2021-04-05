@@ -34,11 +34,15 @@ namespace WpfControlLibrary1
                 //var instance = geoElement.Cast<GeometryObject>().OfType<GeometryInstance>().Select(i => i.GetInstanceGeometry()).ToList();
                 //var solids = geoElement.Cast<GeometryObject>().Concat(instance).OfType<Solid>().Where(s => s.Volume > 0 && s.Faces.Size > 0).ToList();
 
+                //Declare variable
+                double offsetTop = 1000;
+                offsetTop = UnitUtils.Convert(offsetTop, DisplayUnitType.DUT_MILLIMETERS, DisplayUnitType.DUT_DECIMAL_FEET);
+
                 var solids = GetTargetSolids(foundation);
                 var solid = solids.OrderByDescending(s => s.Volume).FirstOrDefault();
                 var botFace = solid.Faces.Cast<Face>().OfType<PlanarFace>().FirstOrDefault(f => Math.Round(f.FaceNormal.Z, 2) == -1);
                 var topFace = solid.Faces.Cast<Face>().OfType<PlanarFace>().FirstOrDefault(f => Math.Round(f.FaceNormal.Z, 2) == 1);
-                var offsetFace = CurveLoop.CreateViaOffset(topFace.GetEdgesAsCurveLoops().FirstOrDefault(), 1, topFace.FaceNormal);
+                var offsetFace = CurveLoop.CreateViaOffset(topFace.GetEdgesAsCurveLoops().FirstOrDefault(), offsetTop, topFace.FaceNormal);
 
                 var fdoc = commandData.Application.Application.NewFamilyDocument(@"C:\ProgramData\Autodesk\RVT 2020\Family Templates\English\Metric Generic Model.rft");
                 using (Transaction tran = new Transaction(fdoc, "new Blend"))
