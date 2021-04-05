@@ -16,9 +16,13 @@ namespace WpfControlLibrary1
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            var doc = commandData.Application.ActiveUIDocument.Document;
+            var uidoc = commandData.Application.ActiveUIDocument;
+            var doc = uidoc.Document;
+
+            //Get document file Link
             //var link = new FilteredElementCollector(doc).OfType<RevitLinkInstance>().FirstOrDefault(l => l.Name == "test.rvt");
             //var linkdoc = link.GetLinkDocument();
+
             var foundations = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_StructuralFoundation)
                 .WhereElementIsNotElementType()
                 .ToElements();
@@ -29,21 +33,22 @@ namespace WpfControlLibrary1
                 //var geoElement = foundation.get_Geometry(otp);
                 //var instance = geoElement.Cast<GeometryObject>().OfType<GeometryInstance>().Select(i => i.GetInstanceGeometry()).ToList();
                 //var solids = geoElement.Cast<GeometryObject>().Concat(instance).OfType<Solid>().Where(s => s.Volume > 0 && s.Faces.Size > 0).ToList();
+
                 var solids = GetTargetSolids(foundation);
                 var solid = solids.OrderByDescending(s => s.Volume).FirstOrDefault();
                 var botFace = solid.Faces.Cast<Face>().OfType<PlanarFace>().FirstOrDefault(f => Math.Round(f.FaceNormal.Z, 2) == -1);
                 var topFace = solid.Faces.Cast<Face>().OfType<PlanarFace>().FirstOrDefault(f => Math.Round(f.FaceNormal.Z, 2) == 1);
                 var offsetFace = CurveLoop.CreateViaOffset(topFace.GetEdgesAsCurveLoops().FirstOrDefault(),1,topFace.FaceNormal);
 
-                var fdoc = commandData.Application.Application.NewFamilyDocument(@"C:\ProgramData\Autodesk\RVT 2020\Family Templates\English_I\Generic Model.rft");
+                var fdoc = commandData.Application.Application.NewFamilyDocument(@"C:\ProgramData\Autodesk\RVT 2020\Family Templates\English\Generic Model.rft");
                 using (Transaction tran = new Transaction(fdoc, "new Blend"))
                 {
                     tran.Start();
                     var plan = Plane.CreateByNormalAndOrigin(XYZ.BasisZ, botFace.Origin);
-                    var sk = SketchPlane.Create(fdoc, plan);
+                    var sketchPlane = SketchPlane.Create(fdoc, plan);
                     var top = ConvertLoopToArray(offsetFace);
                     var baseface = ConvertLoopToArray(botFace.GetEdgesAsCurveLoops().FirstOrDefault());
-                    var blend = fdoc.FamilyCreate.NewBlend(false,top,baseface, sk);
+                    var blend = fdoc.FamilyCreate.NewBlend(true,top,baseface, sketchPlane);
                     blend.LookupParameter("Second End").Set(Math.Abs(blend.LookupParameter("Second End").AsDouble()));
                     //CreateBlend(fdoc, null);
                     tran.Commit();
