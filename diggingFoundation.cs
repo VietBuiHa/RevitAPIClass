@@ -37,11 +37,14 @@ namespace WpfControlLibrary1
                 //Declare variable
                 double offsetTop = 1000;
                 offsetTop = UnitUtils.Convert(offsetTop, DisplayUnitType.DUT_MILLIMETERS, DisplayUnitType.DUT_DECIMAL_FEET);
+                double offsetBot = 100;
+                offsetBot = UnitUtils.Convert(offsetBot, DisplayUnitType.DUT_MILLIMETERS, DisplayUnitType.DUT_DECIMAL_FEET);
 
                 var solids = GetTargetSolids(foundation);
                 var solid = solids.OrderByDescending(s => s.Volume).FirstOrDefault();
-                var botFace = solid.Faces.Cast<Face>().OfType<PlanarFace>().FirstOrDefault(f => Math.Round(f.FaceNormal.Z, 2) == -1);                
 
+                var botFace = solid.Faces.Cast<Face>().OfType<PlanarFace>().FirstOrDefault(f => Math.Round(f.FaceNormal.Z, 2) == -1);                
+                var offsetbotFace = CurveLoop.CreateViaOffset(botFace.GetEdgesAsCurveLoops().FirstOrDefault(), offsetBot, botFace.FaceNormal);
 
                 var topFace = solid.Faces.Cast<Face>().OfType<PlanarFace>().FirstOrDefault(f => Math.Round(f.FaceNormal.Z, 2) == 1);
                 var offsettopFace = CurveLoop.CreateViaOffset(topFace.GetEdgesAsCurveLoops().FirstOrDefault(), offsetTop, topFace.FaceNormal);
