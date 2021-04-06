@@ -40,9 +40,11 @@ namespace WpfControlLibrary1
 
                 var solids = GetTargetSolids(foundation);
                 var solid = solids.OrderByDescending(s => s.Volume).FirstOrDefault();
-                var botFace = solid.Faces.Cast<Face>().OfType<PlanarFace>().FirstOrDefault(f => Math.Round(f.FaceNormal.Z, 2) == -1);
+                var botFace = solid.Faces.Cast<Face>().OfType<PlanarFace>().FirstOrDefault(f => Math.Round(f.FaceNormal.Z, 2) == -1);                
+
+
                 var topFace = solid.Faces.Cast<Face>().OfType<PlanarFace>().FirstOrDefault(f => Math.Round(f.FaceNormal.Z, 2) == 1);
-                var offsetFace = CurveLoop.CreateViaOffset(topFace.GetEdgesAsCurveLoops().FirstOrDefault(), offsetTop, topFace.FaceNormal);
+                var offsettopFace = CurveLoop.CreateViaOffset(topFace.GetEdgesAsCurveLoops().FirstOrDefault(), offsetTop, topFace.FaceNormal);
 
                 var fdoc = commandData.Application.Application.NewFamilyDocument(@"C:\ProgramData\Autodesk\RVT 2020\Family Templates\English\Metric Generic Model.rft");
                 using (Transaction tran = new Transaction(fdoc, "new Blend"))
@@ -50,7 +52,7 @@ namespace WpfControlLibrary1
                     tran.Start();
                     var plan = Plane.CreateByNormalAndOrigin(XYZ.BasisZ, botFace.Origin);
                     var sketchPlane = SketchPlane.Create(fdoc, plan);
-                    var top = ConvertLoopToArray(offsetFace);
+                    var top = ConvertLoopToArray(offsettopFace);
                     var baseface = ConvertLoopToArray(botFace.GetEdgesAsCurveLoops().FirstOrDefault());
                     var blend = fdoc.FamilyCreate.NewBlend(true, top, baseface, sketchPlane);
                     blend.LookupParameter("Second End").Set(Math.Abs(blend.LookupParameter("Second End").AsDouble()));
