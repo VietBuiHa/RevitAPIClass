@@ -26,7 +26,7 @@ namespace WpfControlLibrary1
                 {
                     var boundingBox = ele.get_BoundingBox(null);
                     var outline = new Outline(boundingBox.Min, boundingBox.Max);
-                    var filter = new BoundingBoxIntersectsFilter(outline);
+                    var filter = new BoundingBoxIntersectsFilter(outline);                    
 
                     var collectors = new FilteredElementCollector(doc)//.OfCategory(BuiltInCategory.OST_StructuralFraming)
                         .WhereElementIsNotElementType()
