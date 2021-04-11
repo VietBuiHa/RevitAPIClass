@@ -31,7 +31,7 @@ namespace WpfControlLibrary1
                 var solid = solids.OrderByDescending(s => s.Volume).FirstOrDefault();
                 var botFace = solid.Faces.Cast<Face>().OfType<PlanarFace>().FirstOrDefault(f => Math.Round(f.FaceNormal.Z, 2) == -1);
                 var topFace = solid.Faces.Cast<Face>().OfType<PlanarFace>().FirstOrDefault(f => Math.Round(f.FaceNormal.Z, 2) == 1);
-                var offsetFace = CurveLoop.CreateViaOffset(topFace.GetEdgesAsCurveLoops().FirstOrDefault(),1,topFace.FaceNormal);
+                var offsetFace = CurveLoop.CreateViaOffset(topFace.GetEdgesAsCurveLoops().FirstOrDefault(),5,topFace.FaceNormal);
 
                 var fdoc = commandData.Application.Application.NewFamilyDocument(@"C:\ProgramData\Autodesk\RVT 2020\Family Templates\English_I\Generic Model.rft");
                 using (Transaction tran = new Transaction(fdoc, "new Blend"))
