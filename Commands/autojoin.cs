@@ -4,6 +4,7 @@ using Autodesk.Revit.UI;
 using System;
 using System.Linq;
 using System.Windows;
+using WpfControlLibrary1.Extensions;
 using WpfControlLibrary1.Windows;
 using WpfControlLibrary1.Windows.ViewModels;
 
@@ -38,6 +39,9 @@ namespace WpfControlLibrary1
                     foreach (var ele in eles)
                     {
                         var boundingBox = ele.get_BoundingBox(null);
+
+                        var solids = ele.GetSolids();
+
                         var outline = new Outline(boundingBox.Min, boundingBox.Max);
                         var filter = new BoundingBoxIntersectsFilter(outline);
 
