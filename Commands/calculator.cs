@@ -11,7 +11,7 @@ namespace WpfControlLibrary1
 {
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
-    class calculator : IExternalCommand
+    public class calculator : IExternalCommand
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {

@@ -16,7 +16,7 @@ namespace WpfControlLibrary1
 {
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
-    class diggingHole : IExternalCommand
+    public class diggingHole : IExternalCommand
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {

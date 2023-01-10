@@ -10,7 +10,7 @@ namespace WpfControlLibrary1
 {
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
-    class transfer : IExternalCommand
+    public class transfer : IExternalCommand
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
