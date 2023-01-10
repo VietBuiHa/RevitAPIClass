@@ -10,7 +10,7 @@ using System.IO;
 
 namespace WpfControlLibrary1
 {
-    public class app : IExternalApplication
+    class app : IExternalApplication
     {
         public Result OnStartup(UIControlledApplication application)
         {

@@ -12,7 +12,7 @@ namespace WpfControlLibrary1
 {
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
-    public class formwork : IExternalCommand
+    class formwork : IExternalCommand
     {        
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {

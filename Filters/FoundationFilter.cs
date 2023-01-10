@@ -8,7 +8,7 @@ using Autodesk.Revit.UI.Selection;
 
 namespace WpfControlLibrary1.Filters
 {
-    public class FoundationFilter : ISelectionFilter
+    class FoundationFilter : ISelectionFilter
     {
         public bool AllowElement(Element elem)
         {
