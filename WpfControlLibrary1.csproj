@@ -87,6 +87,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="app.cs" />
+    <Compile Include="AreaFormwork.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Commands\autojoin.cs" />
     <Compile Include="Commands\command1.cs" />
     <Compile Include="Commands\command2.cs" />
