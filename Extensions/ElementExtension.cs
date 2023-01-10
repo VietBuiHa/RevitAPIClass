@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace WpfControlLibrary1.Extensions
 {
-    class ElementExtension
+    public static class ElementExtension
     {
         public static IList<Solid> GetSolids(this Element element)
         {

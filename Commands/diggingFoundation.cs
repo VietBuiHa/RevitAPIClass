@@ -36,9 +36,9 @@ namespace WpfControlLibrary1
 
                 //Declare variable
                 double offsetTop = 1000;
-                offsetTop = UnitUtils.Convert(offsetTop, DisplayUnitType.DUT_MILLIMETERS, DisplayUnitType.DUT_DECIMAL_FEET);
+                offsetTop = UnitUtils.Convert(offsetTop, UnitTypeId.Millimeters, UnitTypeId.Feet);
                 double offsetBot = -100;
-                offsetBot = UnitUtils.Convert(offsetBot, DisplayUnitType.DUT_MILLIMETERS, DisplayUnitType.DUT_DECIMAL_FEET);
+                offsetBot = UnitUtils.Convert(offsetBot, UnitTypeId.Millimeters, UnitTypeId.Feet);
 
                 var solids = GetTargetSolids(foundation);
                 var solid = solids.OrderByDescending(s => s.Volume).FirstOrDefault();

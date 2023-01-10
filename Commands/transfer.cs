@@ -34,7 +34,7 @@ namespace WpfControlLibrary1
                     if (ele.Name == "300 x 450mm")
                     {
                         var volume = ele.LookupParameter("Volume").AsDouble();
-                        volume = UnitUtils.Convert(volume, DisplayUnitType.DUT_CUBIC_FEET, DisplayUnitType.DUT_CUBIC_METERS);
+                        volume = UnitUtils.Convert(volume, UnitTypeId.CubicFeet, UnitTypeId.CubicMeters);
                         ele.LookupParameter("Mark").Set(volume.ToString());
                     }
                     else

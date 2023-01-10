@@ -33,8 +33,8 @@ namespace WpfControlLibrary1
 
             if (window.DialogResult == true)
             {
-                var topoffset = UnitUtils.ConvertToInternalUnits(double.Parse(vm.TopOffset), DisplayUnitType.DUT_MILLIMETERS);
-                var botoffset = UnitUtils.ConvertToInternalUnits(double.Parse(vm.BotOffset), DisplayUnitType.DUT_MILLIMETERS);
+                var topoffset = UnitUtils.ConvertToInternalUnits(double.Parse(vm.TopOffset), UnitTypeId.Millimeters);
+                var botoffset = UnitUtils.ConvertToInternalUnits(double.Parse(vm.BotOffset), UnitTypeId.Millimeters);
                 var filter = new FoundationFilter();
                 var foundations = uidoc.Selection.PickObjects(Autodesk.Revit.UI.Selection.ObjectType.Element, filter)
                     .Select(r => doc.GetElement(r.ElementId))
@@ -57,7 +57,7 @@ namespace WpfControlLibrary1
                     var offsettopFace = CurveLoop.CreateViaOffset(topFace.GetEdgesAsCurveLoops().FirstOrDefault(), topoffset, topFace.FaceNormal);
 
                     var offsetbotFace = CurveLoop.CreateViaOffset(botFace.GetEdgesAsCurveLoops().FirstOrDefault(), botoffset, botFace.FaceNormal);
-                    offsetbotFace.Transform(Transform.CreateTranslation(new XYZ(0, 0, UnitUtils.ConvertToInternalUnits(-100, DisplayUnitType.DUT_MILLIMETERS))));
+                    offsetbotFace.Transform(Transform.CreateTranslation(new XYZ(0, 0, UnitUtils.ConvertToInternalUnits(-100, UnitTypeId.Millimeters))));
                     var fdoc = commandData.Application.Application.NewFamilyDocument(@"C:\ProgramData\Autodesk\RVT 2020\Family Templates\English\Metric Generic Model.rft");
                     using (Transaction tran = new Transaction(fdoc, "new Blend"))
                     {

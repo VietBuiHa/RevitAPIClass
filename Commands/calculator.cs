@@ -72,7 +72,7 @@ namespace WpfControlLibrary1
                                 }
                             }
                         }
-                        totalarea = UnitUtils.Convert(totalarea, DisplayUnitType.DUT_SQUARE_FEET, DisplayUnitType.DUT_SQUARE_METERS);
+                        totalarea = UnitUtils.Convert(totalarea, UnitTypeId.SquareFeet, UnitTypeId.SquareMeters);
                         ele.LookupParameter("Comments").Set(totalarea.ToString());
                         ele.LookupParameter("Mark").Set(totalface.ToString());
                     }
