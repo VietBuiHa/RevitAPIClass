@@ -63,11 +63,11 @@ namespace WpfControlLibrary1
                                         XYZ vectorY = planarFace.YVector;
                                         if (normal.Z == 1)
                                         {
-                                            totalarea = face.Area;
+                                            totalarea += face.Area;
                                             totalface++;
                                         }                                       
                                     }                                   
-                                    totalarea = face.Area;
+                                    totalarea += face.Area;
                                     totalface++;
                                 }
                             }
