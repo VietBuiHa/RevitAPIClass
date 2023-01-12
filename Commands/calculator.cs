@@ -61,13 +61,13 @@ namespace WpfControlLibrary1
                                         //XYZ normal = planarFace.ComputeNormal(new UV(planarFace.Origin.X, planarFace.Origin.Y));
                                         //XYZ vectorX = planarFace.XVector;
                                         //XYZ vectorY = planarFace.YVector;
-                                        if (Math.Round(planarFace.Origin.Z,2)==1)
+                                        if (Math.Round(planarFace.Origin.X,2)==-1)
                                         {
-                                            totalarea += face.Area;
+                                            totalarea = face.Area;
                                             totalface++;
                                         }                                       
                                     }                                   
-                                    totalarea += face.Area;
+                                    totalarea = face.Area;
                                     totalface++;
                                 }
                             }
