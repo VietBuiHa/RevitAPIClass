@@ -38,7 +38,7 @@ namespace WpfControlLibrary1
                     //.WhereElementIsNotElementType()
                     //.ToElements();
 
-                using (var tran = new Transaction(doc, "set information to parameter"))
+                using (var tran = new Transaction(doc, "Set information to Parameter"))
                 {
                     tran.Start();
                     foreach (var ele in eles)
@@ -72,7 +72,7 @@ namespace WpfControlLibrary1
                                             //XYZ normal = planarFace.ComputeNormal(new UV(planarFace.Origin.X, planarFace.Origin.Y));
                                             //XYZ vectorX = planarFace.XVector;
                                             //XYZ vectorY = planarFace.YVector;
-                                            if (Math.Round(planarFace.FaceNormal.Z,2) == 0)
+                                            if (Math.Round(planarFace.FaceNormal.Z,0) == 0)
                                             {
                                                 totalarea += face.Area;
                                                 totalface++;
