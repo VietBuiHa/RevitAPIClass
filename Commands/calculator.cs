@@ -26,6 +26,9 @@ namespace WpfControlLibrary1
                 {
                     new ElementCategoryFilter(BuiltInCategory.OST_StructuralColumns),
                     new ElementCategoryFilter(BuiltInCategory.OST_Floors),
+                    new ElementCategoryFilter(BuiltInCategory.OST_StructuralFraming),
+                    new ElementCategoryFilter(BuiltInCategory.OST_Walls),
+                    new ElementCategoryFilter(BuiltInCategory.OST_GenericModel),
                 });
                 var eles = new FilteredElementCollector(doc)
                     .WherePasses(allelement)
@@ -69,7 +72,7 @@ namespace WpfControlLibrary1
                                             //XYZ normal = planarFace.ComputeNormal(new UV(planarFace.Origin.X, planarFace.Origin.Y));
                                             //XYZ vectorX = planarFace.XVector;
                                             //XYZ vectorY = planarFace.YVector;
-                                            if (Math.Round(planarFace.FaceNormal.Z, 2) == 0)
+                                            if (Math.Round(planarFace.FaceNormal.Z,2) == 0)
                                             {
                                                 totalarea += face.Area;
                                                 totalface++;
