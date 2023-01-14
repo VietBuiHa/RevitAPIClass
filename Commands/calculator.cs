@@ -47,12 +47,12 @@ namespace WpfControlLibrary1
                         Options options = new Options();
                         options.DetailLevel = ViewDetailLevel.Fine;
                         options.ComputeReferences = true;
-                        GeometryElement geomElem = ele.get_Geometry(options);                        
+                        GeometryElement geomElem = ele.get_Geometry(options);
 
                         //declare variable
                         int totalface = 0;
                         double totalarea = 0.0;
-
+                        
                         //Get side face
 
                         if (geomElem!=null)
@@ -62,6 +62,11 @@ namespace WpfControlLibrary1
                                 var solid = obj as Solid;
                                 if (solid != null)
                                 {
+                                    // get DirectShape
+                                    GeometryObject[] dssolid = new GeometryObject[] { solid };
+                                    DirectShape ds1 = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_GenericModel));
+                                    ds1.SetShape(dssolid);
+
                                     foreach (Face face in solid.Faces)
                                     {
                                         PlanarFace planarFace = face as PlanarFace;
@@ -72,8 +77,9 @@ namespace WpfControlLibrary1
                                             //XYZ normal = planarFace.ComputeNormal(new UV(planarFace.Origin.X, planarFace.Origin.Y));
                                             //XYZ vectorX = planarFace.XVector;
                                             //XYZ vectorY = planarFace.YVector;
-                                            if (Math.Round(planarFace.FaceNormal.Z,0) == 0)
+                                            if (Math.Round(planarFace.FaceNormal.Z,2) == 0)
                                             {
+
                                                 totalarea += face.Area;
                                                 totalface++;
                                             }
@@ -81,6 +87,7 @@ namespace WpfControlLibrary1
                                         //totalarea = face.Area;
                                         //totalface++;
                                     }
+
                                 }
                             }
 
