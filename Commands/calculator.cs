@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows;
 using System.Collections.Generic;
 using System;
+using System.Web.UI.HtmlControls;
 
 namespace WpfControlLibrary1
 {
@@ -25,8 +26,8 @@ namespace WpfControlLibrary1
                 var allelement = new LogicalOrFilter(new List<ElementFilter>()
                 {
                     new ElementCategoryFilter(BuiltInCategory.OST_StructuralColumns),
-                    new ElementCategoryFilter(BuiltInCategory.OST_Floors),
                     new ElementCategoryFilter(BuiltInCategory.OST_StructuralFraming),
+                    new ElementCategoryFilter(BuiltInCategory.OST_Floors),
                     new ElementCategoryFilter(BuiltInCategory.OST_Walls),
                     new ElementCategoryFilter(BuiltInCategory.OST_GenericModel),
                 });
@@ -63,9 +64,9 @@ namespace WpfControlLibrary1
                                 if (solid != null)
                                 {
                                     // get DirectShape
-                                    GeometryObject[] dssolid = new GeometryObject[] { solid };
-                                    DirectShape ds1 = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_GenericModel));
-                                    ds1.SetShape(dssolid);
+                                    //GeometryObject[] geosolid = new GeometryObject[] { solid };
+                                    //DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_GenericModel));
+                                    //ds.SetShape(geosolid);
 
                                     foreach (Face face in solid.Faces)
                                     {
@@ -79,7 +80,7 @@ namespace WpfControlLibrary1
                                             //XYZ vectorY = planarFace.YVector;
                                             if (Math.Round(planarFace.FaceNormal.Z,2) == 0)
                                             {
-
+                                                                
                                                 totalarea += face.Area;
                                                 totalface++;
                                             }
@@ -92,7 +93,8 @@ namespace WpfControlLibrary1
                             }
 
                         }
-                        totalarea = UnitUtils.Convert(totalarea, UnitTypeId.SquareFeet, UnitTypeId.SquareMeters);
+                        totalarea = Math.Round(UnitUtils.Convert(totalarea, UnitTypeId.SquareFeet, UnitTypeId.SquareMeters),3);
+                        //totalarea = Math.Floor(UnitUtils.Convert(totalarea, UnitTypeId.SquareFeet, UnitTypeId.SquareMeters));
                         ele.LookupParameter("Comments").Set(totalarea.ToString());
                         ele.LookupParameter("Mark").Set(totalface.ToString());
                     }
