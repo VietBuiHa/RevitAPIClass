@@ -7,6 +7,8 @@ using System.Windows;
 using System.Collections.Generic;
 using System;
 using System.Web.UI.HtmlControls;
+using System.Xml.Linq;
+using System.Collections;
 
 namespace WpfControlLibrary1
 {
@@ -51,24 +53,25 @@ namespace WpfControlLibrary1
                         GeometryElement geomElem = ele.get_Geometry(options);
 
                         //declare variable
-                        int totalface = 0;
+                        int totalface = 0;                      
                         double totalarea = 0.0;
+                        double totalIntersectArea = 0.0;
                         
                         //Get side face
 
                         if (geomElem!=null)
                         {
-                            foreach (var obj in geomElem)
+                            foreach (var obj1 in geomElem)
                             {
-                                var solid = obj as Solid;
-                                if (solid != null)
+                                var solid1 = obj1 as Solid;
+                                if (solid1 != null)
                                 {
                                     // get DirectShape
-                                    //GeometryObject[] geosolid = new GeometryObject[] { solid };
+                                    //GeometryObject[] geosolid = new GeometryObject[] { solid1 };
                                     //DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_GenericModel));
                                     //ds.SetShape(geosolid);
 
-                                    foreach (Face face in solid.Faces)
+                                    foreach (Face face in solid1.Faces)
                                     {
                                         PlanarFace planarFace = face as PlanarFace;
                                         if (null != planarFace)
@@ -78,17 +81,29 @@ namespace WpfControlLibrary1
                                             //XYZ normal = planarFace.ComputeNormal(new UV(planarFace.Origin.X, planarFace.Origin.Y));
                                             //XYZ vectorX = planarFace.XVector;
                                             //XYZ vectorY = planarFace.YVector;
-                                            if (Math.Round(planarFace.FaceNormal.Z,2) == 0)
+                                            if (Math.Round(planarFace.FaceNormal.Z, 2) == 0)
                                             {
-                                                                
+
                                                 totalarea += face.Area;
                                                 totalface++;
+
                                             }
                                         }
-                                        //totalarea = face.Area;
-                                        //totalface++;
                                     }
+                                }
 
+                                //Get intersection
+                                foreach (var obj2 in geomElem)
+                                {
+                                    var solid2 = obj2 as Solid;
+                                    if (solid2 != null && solid2 != solid1)
+                                    {
+                                        // Create an IntersectionResult object
+                                        IntersectionResult result = new IntersectionResult();
+
+                                        
+
+                                    }
                                 }
                             }
 
@@ -110,6 +125,11 @@ namespace WpfControlLibrary1
             }
 
              
+        }
+
+        private object IntersectionResult(Solid solid1, Solid solid2, IntersectionResultArray results)
+        {
+            throw new NotImplementedException();
         }
     }    
 }
