@@ -115,6 +115,12 @@ namespace WpfControlLibrary1
                                                     if (solid2 != null)
                                                     {
                                                         Solid intersection = BooleanOperationsUtils.ExecuteBooleanOperation(solid1, solid2, BooleanOperationsType.Intersect);
+
+                                                        //get DirectShape
+                                                        //GeometryObject[] geosolid = new GeometryObject[] { intersection };
+                                                        //DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_GenericModel));
+                                                        //ds.SetShape(geosolid);
+
                                                         volumeOfIntersection += intersection.Volume;
                                                         volumeOfIntersection = Math.Round(UnitUtils.Convert(volumeOfIntersection, UnitTypeId.CubicFeet, UnitTypeId.CubicMeters), 3);
                                                         ele.LookupParameter("Test Volume").Set(volumeOfIntersection);
