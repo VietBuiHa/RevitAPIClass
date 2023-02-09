@@ -37,10 +37,7 @@ namespace WpfControlLibrary1
                 var eles = new FilteredElementCollector(doc)
                     .WherePasses(allelement)
                     .WhereElementIsNotElementType()
-                    .ToElements();
-               // var floors = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Floors)
-                    //.WhereElementIsNotElementType()
-                    //.ToElements();
+                    .ToElements();               
 
                 using (var tran = new Transaction(doc, "Set information to Parameter"))
                 {
@@ -52,21 +49,25 @@ namespace WpfControlLibrary1
                         options.ComputeReferences = true;
                         GeometryElement geomElem = ele.get_Geometry(options);
 
+                        //Get element intersection
                         var boundingBox = ele.get_BoundingBox(null);
-                        var solids = ele.GetSolids();
-                        var outline = new Outline(boundingBox.Min, boundingBox.Max);
-                        var filter = new BoundingBoxIntersectsFilter(outline);
+                        if (boundingBox != null)
+                        {
+                            //var solids = ele.GetSolids();
+                            var outline = new Outline(boundingBox.Min, boundingBox.Max);
+                            var filter = new BoundingBoxIntersectsFilter(outline);
 
-                        //Get elements with 2 condition
-                        var combine = new LogicalAndFilter(new List<ElementFilter>() 
+                            //Get elements with 2 condition
+                            var combine = new LogicalAndFilter(new List<ElementFilter>()
                         {
                             allelement,filter
                         });
 
-                        var elesIntersect = new FilteredElementCollector(doc)
-                            .WhereElementIsNotElementType()
-                            .WherePasses(combine)
-                            .ToElements();
+                            var elesIntersect = new FilteredElementCollector(doc)
+                                .WhereElementIsNotElementType()
+                                .WherePasses(combine)
+                                .ToElements();
+                        }                        
                         
                         //declare variable
                         int totalface = 0;                      
@@ -74,8 +75,7 @@ namespace WpfControlLibrary1
                         double totalIntersectArea = 0.0;
                         
                         //Get side face
-
-                        if (geomElem!=null)
+                        if (geomElem != null)
                         {
                             foreach (var obj1 in geomElem)
                             {
@@ -99,17 +99,16 @@ namespace WpfControlLibrary1
                                             //XYZ vectorY = planarFace.YVector;
                                             if (Math.Round(planarFace.FaceNormal.Z, 2) == 0)
                                             {
-
                                                 totalarea += face.Area;
                                                 totalface++;
-
                                             }
                                         }
                                     }
                                 }                             
                             }
-
                         }
+
+
                         totalarea = Math.Round(UnitUtils.Convert(totalarea, UnitTypeId.SquareFeet, UnitTypeId.SquareMeters),3);
                         //totalarea = Math.Floor(UnitUtils.Convert(totalarea, UnitTypeId.SquareFeet, UnitTypeId.SquareMeters));
                         ele.LookupParameter("Comments").Set(totalarea.ToString());
@@ -121,8 +120,10 @@ namespace WpfControlLibrary1
             }
             catch (Exception ex)
             {
-
                 message = ex.Message;
-                return Result.Failed;
-            }
+                MessageBox.Show(ex.ToString());
+                return Result.Failed;               
+            }             
+        }                
+    }    
 }
