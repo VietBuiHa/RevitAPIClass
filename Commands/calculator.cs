@@ -117,7 +117,7 @@ namespace WpfControlLibrary1
                                                         Solid intersection = BooleanOperationsUtils.ExecuteBooleanOperation(solid1, solid2, BooleanOperationsType.Intersect);
                                                         volumeOfIntersection += intersection.Volume;
                                                         volumeOfIntersection = Math.Round(UnitUtils.Convert(volumeOfIntersection, UnitTypeId.CubicFeet, UnitTypeId.CubicMeters), 3);
-                                                        ele.LookupParameter("TestV").Set(volumeOfIntersection.ToString());
+                                                        ele.LookupParameter("Test Volume").Set(volumeOfIntersection);
                                                     }
                                                 }
                                             }
