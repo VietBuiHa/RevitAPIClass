@@ -125,13 +125,4 @@ namespace WpfControlLibrary1
                 message = ex.Message;
                 return Result.Failed;
             }
-
-             
-        }
-
-        private object IntersectionResult(Solid solid1, Solid solid2, IntersectionResultArray results)
-        {
-            throw new NotImplementedException();
-        }
-    }    
 }
