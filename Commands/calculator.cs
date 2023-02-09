@@ -59,9 +59,9 @@ namespace WpfControlLibrary1
 
                             //Get elements with 2 condition
                             var combine = new LogicalAndFilter(new List<ElementFilter>()
-                        {
-                            allelement,filter
-                        });
+                            {
+                                allelement,filter
+                            });
 
                             var elesIntersect = new FilteredElementCollector(doc)
                                 .WhereElementIsNotElementType()
