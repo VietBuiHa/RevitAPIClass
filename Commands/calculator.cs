@@ -67,52 +67,73 @@ namespace WpfControlLibrary1
                                 .WhereElementIsNotElementType()
                                 .WherePasses(combine)
                                 .ToElements();
-                        }                        
-                        
-                        //declare variable
-                        int totalface = 0;                      
-                        double totalarea = 0.0;
-                        double totalIntersectArea = 0.0;
-                        
-                        //Get side face
-                        if (geomElem != null)
-                        {
-                            foreach (var obj1 in geomElem)
-                            {
-                                var solid1 = obj1 as Solid;
-                                if (solid1 != null)
-                                {
-                                    // get DirectShape
-                                    //GeometryObject[] geosolid = new GeometryObject[] { solid1 };
-                                    //DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_GenericModel));
-                                    //ds.SetShape(geosolid);
 
-                                    foreach (Face face in solid1.Faces)
+                            //declare variable
+                            int totalface = 0;
+                            double totalarea = 0.0;
+                            double totalIntersectArea = 0.0;
+                            double volumeOfIntersection = 0.0;
+
+                            //Get side face
+                            if (geomElem != null)
+                            {
+                                foreach (var obj1 in geomElem)
+                                {
+                                    var solid1 = obj1 as Solid;
+                                    if (solid1 != null)
                                     {
-                                        PlanarFace planarFace = face as PlanarFace;
-                                        if (null != planarFace)
+                                        // get DirectShape
+                                        //GeometryObject[] geosolid = new GeometryObject[] { solid1 };
+                                        //DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_GenericModel));
+                                        //ds.SetShape(geosolid);
+
+                                        foreach (Face face in solid1.Faces)
                                         {
-                                            //XYZ origin = planarFace.Origin;
-                                            //XYZ normal = planarFace.FaceNormal;
-                                            //XYZ normal = planarFace.ComputeNormal(new UV(planarFace.Origin.X, planarFace.Origin.Y));
-                                            //XYZ vectorX = planarFace.XVector;
-                                            //XYZ vectorY = planarFace.YVector;
-                                            if (Math.Round(planarFace.FaceNormal.Z, 2) == 0)
+                                            PlanarFace planarFace = face as PlanarFace;
+                                            if (null != planarFace)
                                             {
-                                                totalarea += face.Area;
-                                                totalface++;
+                                                //XYZ origin = planarFace.Origin;
+                                                //XYZ normal = planarFace.FaceNormal;
+                                                //XYZ normal = planarFace.ComputeNormal(new UV(planarFace.Origin.X, planarFace.Origin.Y));
+                                                //XYZ vectorX = planarFace.XVector;
+                                                //XYZ vectorY = planarFace.YVector;
+                                                if (Math.Round(planarFace.FaceNormal.Z, 2) == 0)
+                                                {
+                                                    totalarea += face.Area;
+                                                    totalface++;
+                                                }
+                                            }
+                                        }
+                                        foreach (var item in elesIntersect)
+                                        {
+                                            GeometryElement geomElemI = item.get_Geometry(options);
+                                            if (geomElemI != null)
+                                            {
+                                                foreach (var obj2 in geomElemI)
+                                                {
+                                                    var solid2 = obj2 as Solid;
+                                                    if (solid2 != null)
+                                                    {
+                                                        Solid intersection = BooleanOperationsUtils.ExecuteBooleanOperation(solid1, solid2, BooleanOperationsType.Intersect);
+                                                        volumeOfIntersection += intersection.Volume;
+                                                        volumeOfIntersection = Math.Round(UnitUtils.Convert(volumeOfIntersection, UnitTypeId.CubicFeet, UnitTypeId.CubicMeters), 3);
+                                                        ele.LookupParameter("TestV").Set(volumeOfIntersection.ToString());
+                                                    }
+                                                }
                                             }
                                         }
                                     }
-                                }                             
-                            }
-                        }
+                                    
+                                }
+                            }                            
 
+                            totalarea = Math.Round(UnitUtils.Convert(totalarea, UnitTypeId.SquareFeet, UnitTypeId.SquareMeters), 3);
+                            //totalarea = Math.Floor(UnitUtils.Convert(totalarea, UnitTypeId.SquareFeet, UnitTypeId.SquareMeters));
+                            ele.LookupParameter("Comments").Set(totalarea.ToString());
+                            ele.LookupParameter("Mark").Set(totalface.ToString());                           
 
-                        totalarea = Math.Round(UnitUtils.Convert(totalarea, UnitTypeId.SquareFeet, UnitTypeId.SquareMeters),3);
-                        //totalarea = Math.Floor(UnitUtils.Convert(totalarea, UnitTypeId.SquareFeet, UnitTypeId.SquareMeters));
-                        ele.LookupParameter("Comments").Set(totalarea.ToString());
-                        ele.LookupParameter("Mark").Set(totalface.ToString());
+                        }                     
+                                               
                     }
                     tran.Commit();
                 }
