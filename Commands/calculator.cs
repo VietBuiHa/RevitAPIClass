@@ -9,6 +9,7 @@ using System;
 using System.Web.UI.HtmlControls;
 using System.Xml.Linq;
 using System.Collections;
+using WpfControlLibrary1.Extensions;
 
 namespace WpfControlLibrary1
 {
@@ -45,13 +46,28 @@ namespace WpfControlLibrary1
                 {
                     tran.Start();
                     foreach (var ele in eles)
-
                     {
                         Options options = new Options();
                         options.DetailLevel = ViewDetailLevel.Fine;
                         options.ComputeReferences = true;
                         GeometryElement geomElem = ele.get_Geometry(options);
 
+                        var boundingBox = ele.get_BoundingBox(null);
+                        var solids = ele.GetSolids();
+                        var outline = new Outline(boundingBox.Min, boundingBox.Max);
+                        var filter = new BoundingBoxIntersectsFilter(outline);
+
+                        //Get elements with 2 condition
+                        var combine = new LogicalAndFilter(new List<ElementFilter>() 
+                        {
+                            allelement,filter
+                        });
+
+                        var elesIntersect = new FilteredElementCollector(doc)
+                            .WhereElementIsNotElementType()
+                            .WherePasses(combine)
+                            .ToElements();
+                        
                         //declare variable
                         int totalface = 0;                      
                         double totalarea = 0.0;
@@ -90,21 +106,7 @@ namespace WpfControlLibrary1
                                             }
                                         }
                                     }
-                                }
-
-                                //Get intersection
-                                foreach (var obj2 in geomElem)
-                                {
-                                    var solid2 = obj2 as Solid;
-                                    if (solid2 != null && solid2 != solid1)
-                                    {
-                                        // Create an IntersectionResult object
-                                        IntersectionResult result = new IntersectionResult();
-
-                                        
-
-                                    }
-                                }
+                                }                             
                             }
 
                         }
