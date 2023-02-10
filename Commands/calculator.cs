@@ -47,7 +47,7 @@ namespace WpfControlLibrary1
                         Options options = new Options();
                         options.DetailLevel = ViewDetailLevel.Fine;
                         options.ComputeReferences = true;
-                        GeometryElement geomElem = ele.get_Geometry(options);
+                        GeometryElement geomElem = ele.get_Geometry(options);                        
 
                         //Get element intersection
                         var boundingBox = ele.get_BoundingBox(null);
@@ -77,11 +77,14 @@ namespace WpfControlLibrary1
                             //Get side face
                             if (geomElem != null)
                             {
+                                
                                 foreach (var obj1 in geomElem)
                                 {
                                     var solid1 = obj1 as Solid;
                                     if (solid1 != null)
                                     {
+                                        
+
                                         // get DirectShape
                                         //GeometryObject[] geosolid = new GeometryObject[] { solid1 };
                                         //DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_GenericModel));
@@ -107,14 +110,15 @@ namespace WpfControlLibrary1
                                         foreach (var item in elesIntersect)
                                         {
                                             GeometryElement geomElemI = item.get_Geometry(options);
-                                            if (geomElemI != null)
+                                            if (geomElemI != null && item != ele)
                                             {
+                                                
                                                 foreach (var obj2 in geomElemI)
                                                 {
                                                     var solid2 = obj2 as Solid;
                                                     if (solid2 != null)
                                                     {
-                                                        Solid intersection = BooleanOperationsUtils.ExecuteBooleanOperation(solid1, solid2, BooleanOperationsType.Intersect);
+                                                        Solid intersection = BooleanOperationsUtils.ExecuteBooleanOperation(solid2, solid1, BooleanOperationsType.Intersect);
 
                                                         //get DirectShape
                                                         //GeometryObject[] geosolid = new GeometryObject[] { intersection };
@@ -122,17 +126,24 @@ namespace WpfControlLibrary1
                                                         //ds.SetShape(geosolid);
 
                                                         volumeOfIntersection += intersection.Volume;
-                                                        volumeOfIntersection = Math.Round(UnitUtils.Convert(volumeOfIntersection, UnitTypeId.CubicFeet, UnitTypeId.CubicMeters), 3);
-                                                        ele.LookupParameter("Test Volume").Set(volumeOfIntersection);
+                                                        
+                                                        
                                                     }
+                                                    
                                                 }
+
                                             }
+                                            
                                         }
                                     }
                                     
                                 }
-                            }                            
+                            }
 
+                            volumeOfIntersection = Math.Round(volumeOfIntersection, 3);
+                            ele.LookupParameter("Test Volume").Set(volumeOfIntersection);
+
+                            //All
                             totalarea = Math.Round(UnitUtils.Convert(totalarea, UnitTypeId.SquareFeet, UnitTypeId.SquareMeters), 3);
                             //totalarea = Math.Floor(UnitUtils.Convert(totalarea, UnitTypeId.SquareFeet, UnitTypeId.SquareMeters));
                             ele.LookupParameter("Comments").Set(totalarea.ToString());
