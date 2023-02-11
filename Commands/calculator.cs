@@ -47,7 +47,8 @@ namespace WpfControlLibrary1
                         Options options = new Options();
                         options.DetailLevel = ViewDetailLevel.Fine;
                         options.ComputeReferences = true;
-                        GeometryElement geomElem = ele.get_Geometry(options);                        
+                        GeometryElement geomElem = ele.get_Geometry(options);
+                        
 
                         //Get element intersection
                         var boundingBox = ele.get_BoundingBox(null);
@@ -108,27 +109,32 @@ namespace WpfControlLibrary1
                                         }
                                         foreach (var item in elesIntersect)
                                         {
-                                            GeometryElement geomElemI = item.get_Geometry(options);
-                                            if (geomElemI != null && item != ele)
+                                            if (item.GetTypeId() != ele.GetTypeId())
                                             {
-                                                
-                                                foreach (var obj2 in geomElemI)
+                                                GeometryElement geomElemI = item.get_Geometry(options);
+                                                if (geomElemI != null)
                                                 {
-                                                    var solid2 = obj2 as Solid;
-                                                    if (solid2 != null)
+
+                                                    foreach (var obj2 in geomElemI)
                                                     {
-                                                        Solid intersection = BooleanOperationsUtils.ExecuteBooleanOperation(solid1, solid2, BooleanOperationsType.Intersect);
+                                                        var solid2 = obj2 as Solid;
+                                                        if (solid2 != null)
+                                                        {
+                                                            Solid intersection = BooleanOperationsUtils.ExecuteBooleanOperation(solid1, solid2, BooleanOperationsType.Intersect);
 
-                                                        //get DirectShape
-                                                        //GeometryObject[] geosolid = new GeometryObject[] { intersection };
-                                                        //DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_GenericModel));
-                                                        //ds.SetShape(geosolid);
+                                                            //get DirectShape
+                                                            GeometryObject[] geosolid = new GeometryObject[] { intersection };
+                                                            DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_GenericModel));
+                                                            ds.SetShape(geosolid);
 
-                                                        volumeOfIntersection += intersection.Volume;
-                                                        
-                                                    }                                                    
+                                                            volumeOfIntersection += intersection.Volume;
+
+
+                                                        }
+                                                    }
                                                 }
-                                            }                                            
+                                            }
+                                                                      
                                         }
                                     }                                    
                                 }
