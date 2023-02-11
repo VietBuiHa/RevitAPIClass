@@ -124,12 +124,12 @@ namespace WpfControlLibrary1
                                                         GeometryElement geomElemI = familyInstanceI.GetOriginalGeometry(options);
                                                         if (geomElemI != null)
                                                         {
-
                                                             foreach (var obj2 in geomElemI)
                                                             {
                                                                 var solid2 = obj2 as Solid;
                                                                 if (solid2 != null)
                                                                 {
+                                                                   
                                                                     Solid intersection = BooleanOperationsUtils.ExecuteBooleanOperation(solid1, solid2, BooleanOperationsType.Intersect);
 
                                                                     //get DirectShape
