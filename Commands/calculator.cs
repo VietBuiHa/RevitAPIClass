@@ -70,8 +70,7 @@ namespace WpfControlLibrary1
 
                             //declare variable
                             int totalface = 0;
-                            double totalarea = 0.0;
-                            double totalIntersectArea = 0.0;
+                            double totalarea = 0.0;                            
                             double volumeOfIntersection = 0.0;
 
                             //Get side face
@@ -118,7 +117,7 @@ namespace WpfControlLibrary1
                                                     var solid2 = obj2 as Solid;
                                                     if (solid2 != null)
                                                     {
-                                                        Solid intersection = BooleanOperationsUtils.ExecuteBooleanOperation(solid2, solid1, BooleanOperationsType.Intersect);
+                                                        Solid intersection = BooleanOperationsUtils.ExecuteBooleanOperation(solid1, solid2, BooleanOperationsType.Intersect);
 
                                                         //get DirectShape
                                                         //GeometryObject[] geosolid = new GeometryObject[] { intersection };
@@ -127,16 +126,11 @@ namespace WpfControlLibrary1
 
                                                         volumeOfIntersection += intersection.Volume;
                                                         
-                                                        
-                                                    }
-                                                    
+                                                    }                                                    
                                                 }
-
-                                            }
-                                            
+                                            }                                            
                                         }
-                                    }
-                                    
+                                    }                                    
                                 }
                             }
 
