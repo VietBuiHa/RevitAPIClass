@@ -11,6 +11,7 @@ using System.Xml.Linq;
 using System.Collections;
 using WpfControlLibrary1.Extensions;
 using System.Net.Sockets;
+using Autodesk.Revit.DB.IFC;
 
 namespace WpfControlLibrary1
 {
@@ -146,7 +147,8 @@ namespace WpfControlLibrary1
                                                                                 FaceIntersectionFaceResult s1 = planarf1.Intersect(planarf2,out Curve curve);
                                                                                 if (s1 == FaceIntersectionFaceResult.Intersecting)
                                                                                 {
-                                                                                    
+                                                                                    CurveLoop curves = CurveLoop.Create((IList<Curve>)curve);
+                                                                                    areaOfIntersection += ExporterIFCUtils.ComputeAreaOfCurveLoops((IList<CurveLoop>)curves);                                                                                                                                                                                                                                               
                                                                                 }                                                                                
                                                                             }
                                                                         }
@@ -161,6 +163,9 @@ namespace WpfControlLibrary1
                                     }
                                 }
                             }
+
+                            areaOfIntersection = Math.Round(UnitUtils.Convert(areaOfIntersection, UnitTypeId.SquareFeet, UnitTypeId.SquareMeters), 3);
+                            ele.LookupParameter("TestA").Set(areaOfIntersection);
 
                             volumeOfIntersection = Math.Round(volumeOfIntersection, 3);
                             ele.LookupParameter("Test Volume").Set(volumeOfIntersection);
