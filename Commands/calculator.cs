@@ -148,7 +148,12 @@ namespace WpfControlLibrary1
                                                                                 if (s1 == FaceIntersectionFaceResult.Intersecting)
                                                                                 {
                                                                                     CurveLoop curves = CurveLoop.Create((IList<Curve>)curve);
-                                                                                    areaOfIntersection += ExporterIFCUtils.ComputeAreaOfCurveLoops((IList<CurveLoop>)curves);                                                                                                                                                                                                                                               
+                                                                                    //List<CurveLoop> curves = new List<CurveLoop>((IEnumerable<CurveLoop>)curve);
+                                                                                    areaOfIntersection = ExporterIFCUtils.ComputeAreaOfCurveLoops((IList<CurveLoop>)curves);
+                                                                                    if (areaOfIntersection !=0)
+                                                                                    {
+                                                                                        areaOfIntersection += areaOfIntersection;
+                                                                                    }
                                                                                 }                                                                                
                                                                             }
                                                                         }
