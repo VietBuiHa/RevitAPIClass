@@ -74,7 +74,7 @@ namespace WpfControlLibrary1
                             int totalface = 0;
                             double totalarea = 0.0;
                             double volumeOfIntersection = 0.0;
-                            double areaOfIntersection = 10.0;
+                            double areaOfIntersection = 0.0;
 
                             //Get side face
                             if (geomElem != null)
@@ -147,13 +147,11 @@ namespace WpfControlLibrary1
                                                                                 FaceIntersectionFaceResult s1 = planarf1.Intersect(planarf2,out Curve curve);
                                                                                 if (s1 == FaceIntersectionFaceResult.Intersecting)
                                                                                 {
-                                                                                    CurveLoop curves = CurveLoop.Create((IList<Curve>)curve);
+                                                                                    ////CurveLoop curves = CurveLoop.Create((IList<Curve>)curve);
                                                                                     //List<CurveLoop> curves = new List<CurveLoop>((IEnumerable<CurveLoop>)curve);
-                                                                                    areaOfIntersection = ExporterIFCUtils.ComputeAreaOfCurveLoops((IList<CurveLoop>)curves);
-                                                                                    if (areaOfIntersection !=0)
-                                                                                    {
-                                                                                        areaOfIntersection += areaOfIntersection;
-                                                                                    }
+                                                                                    //areaOfIntersection += ExporterIFCUtils.ComputeAreaOfCurveLoops((IList<CurveLoop>)curves);
+                                                                                    areaOfIntersection = curve.Length;
+
                                                                                 }                                                                                
                                                                             }
                                                                         }
@@ -181,8 +179,7 @@ namespace WpfControlLibrary1
                             ele.LookupParameter("Comments").Set(totalarea.ToString());
                             ele.LookupParameter("Mark").Set(totalface.ToString());
 
-                        }                     
-
+                        }                   
                     }
                     tran.Commit();
                 }
