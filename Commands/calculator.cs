@@ -147,11 +147,18 @@ namespace WpfControlLibrary1
                                                                                 FaceIntersectionFaceResult s1 = planarf1.Intersect(planarf2,out Curve curve);
                                                                                 if (s1 == FaceIntersectionFaceResult.Intersecting)
                                                                                 {
-                                                                                    ////CurveLoop curves = CurveLoop.Create((IList<Curve>)curve);
-                                                                                    //List<CurveLoop> curves = new List<CurveLoop>((IEnumerable<CurveLoop>)curve);
-                                                                                    //areaOfIntersection += ExporterIFCUtils.ComputeAreaOfCurveLoops((IList<CurveLoop>)curves);
-                                                                                    areaOfIntersection = curve.Length;
-
+                                                                                    //XYZ staP = curve.GetEndPoint(1);
+                                                                                    //XYZ endP = curve.GetEndPoint(0);
+                                                                                    //if (staP == endP)
+                                                                                    //{
+                                                                                    //    //CurveLoop curves = CurveLoop.Create((IList<Curve>)curve);
+                                                                                    //    List<CurveLoop> curves = new List<CurveLoop>((IEnumerable<CurveLoop>)curve);
+                                                                                    //    areaOfIntersection += ExporterIFCUtils.ComputeAreaOfCurveLoops((IList<CurveLoop>)curves);
+                                                                                    //}
+                                                                                    if (curve != null)
+                                                                                    {
+                                                                                        areaOfIntersection += curve.Length;
+                                                                                    }
                                                                                 }                                                                                
                                                                             }
                                                                         }
