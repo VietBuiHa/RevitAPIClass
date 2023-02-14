@@ -74,7 +74,7 @@ namespace WpfControlLibrary1
                             int totalface = 0;
                             double totalarea = 0.0;
                             double volumeOfIntersection = 0.0;
-                            double areaOfIntersection = 0.0;
+                            double areaOfIntersection = 10.0;
 
                             //Get side face
                             if (geomElem != null)
