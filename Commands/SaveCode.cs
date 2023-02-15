@@ -17,7 +17,7 @@ namespace WpfControlLibrary1
 {
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
-    class calculator : IExternalCommand
+    class SaveCode : IExternalCommand
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
@@ -39,7 +39,7 @@ namespace WpfControlLibrary1
                 var eles = new FilteredElementCollector(doc)
                     .WherePasses(allelement)
                     .WhereElementIsNotElementType()
-                    .ToElements();               
+                    .ToElements();
 
                 using (var tran = new Transaction(doc, "Set information to Parameter"))
                 {
@@ -79,11 +79,19 @@ namespace WpfControlLibrary1
                             //Get side face
                             if (geomElem != null)
                             {
+
                                 foreach (var obj1 in geomElem)
                                 {
                                     var solid1 = obj1 as Solid;
                                     if (solid1 != null)
-                                    {                                       
+                                    {
+
+
+                                        // get DirectShape
+                                        //GeometryObject[] geosolid = new GeometryObject[] { solid1 };
+                                        //DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_GenericModel));
+                                        //ds.SetShape(geosolid);
+
                                         foreach (Face face in solid1.Faces)
                                         {
                                             PlanarFace planarFace = face as PlanarFace;
@@ -103,7 +111,7 @@ namespace WpfControlLibrary1
                                         }
                                         foreach (var item in elesIntersect)
                                         {
-                                            if (item.Id.IntegerValue != ele.Id.IntegerValue)
+                                            if (item.GetTypeId() != ele.GetTypeId())
                                             {
                                                 GeometryElement geomElemI = item.get_Geometry(options);
                                                 if (geomElemI != null)
@@ -113,28 +121,56 @@ namespace WpfControlLibrary1
                                                         var solid2 = obj2 as Solid;
                                                         if (solid2 != null)
                                                         {
-                                                            Solid union = BooleanOperationsUtils.ExecuteBooleanOperation(solid1, solid2, BooleanOperationsType.Union);
-                                                            if (union != null)
+
+                                                            Solid intersection = BooleanOperationsUtils.ExecuteBooleanOperation(solid1, solid2, BooleanOperationsType.Intersect);
+                                                            if (intersection != null)
                                                             {
                                                                 //get DirectShape
-                                                                GeometryObject[] geosolid = new GeometryObject[] { union };
+                                                                GeometryObject[] geosolid = new GeometryObject[] { intersection };
                                                                 DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_GenericModel));
                                                                 ds.SetShape(geosolid);
 
-                                                                volumeOfIntersection += union.Volume;
-
-                                                            }                                                            
+                                                                volumeOfIntersection += intersection.Volume;
+                                                            }
+                                                            else
+                                                            {
+                                                                foreach (Face f1 in solid1.Faces)
+                                                                {
+                                                                    foreach (Face f2 in solid2.Faces)
+                                                                    {
+                                                                        PlanarFace planarf1 = f1 as PlanarFace;
+                                                                        PlanarFace planarf2 = f2 as PlanarFace;
+                                                                        if (planarf1 != null && planarf2 != null)
+                                                                        {
+                                                                            if (Math.Round(planarf1.FaceNormal.Z, 2) == 0)
+                                                                            {
+                                                                                FaceIntersectionFaceResult s1 = planarf1.Intersect(planarf2, out Curve curve);
+                                                                                if (s1 == FaceIntersectionFaceResult.Intersecting)
+                                                                                {
+                                                                                    //XYZ staP = curve.GetEndPoint(1);
+                                                                                    //XYZ endP = curve.GetEndPoint(0);                                                                                    
+                                                                                    {
+                                                                                        //CurveLoop curves = CurveLoop.Create((IList<Curve>)curve);
+                                                                                        List<CurveLoop> curves = new List<CurveLoop>((IEnumerable<CurveLoop>)curve);
+                                                                                        areaOfIntersection += ExporterIFCUtils.ComputeAreaOfCurveLoops((IList<CurveLoop>)curves);
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
                                                         }
                                                     }
-                                                }                                                                                                
+                                                }
                                             }
                                         }
                                     }
                                 }
                             }
 
-                            //areaOfIntersection = Math.Round(UnitUtils.Convert(areaOfIntersection, UnitTypeId.SquareFeet, UnitTypeId.SquareMeters), 3);
-                            //ele.LookupParameter("TestA").Set(areaOfIntersection);
+                            areaOfIntersection = Math.Round(UnitUtils.Convert(areaOfIntersection, UnitTypeId.SquareFeet, UnitTypeId.SquareMeters), 3);
+                            ele.LookupParameter("TestA").Set(areaOfIntersection);
 
                             volumeOfIntersection = Math.Round(volumeOfIntersection, 3);
                             ele.LookupParameter("Test Volume").Set(volumeOfIntersection);
@@ -145,7 +181,7 @@ namespace WpfControlLibrary1
                             ele.LookupParameter("Comments").Set(totalarea.ToString());
                             ele.LookupParameter("Mark").Set(totalface.ToString());
 
-                        }                   
+                        }
                     }
                     tran.Commit();
                 }
@@ -155,8 +191,8 @@ namespace WpfControlLibrary1
             {
                 message = ex.Message;
                 MessageBox.Show(ex.ToString());
-                return Result.Failed;               
-            }             
-        }                
-    }    
+                return Result.Failed;
+            }
+        }
+    }
 }

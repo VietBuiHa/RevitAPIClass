@@ -112,6 +112,7 @@
     <Compile Include="Commands\diggingFoundation.cs" />
     <Compile Include="Commands\diggingHole.cs" />
     <Compile Include="Commands\formwork.cs" />
+    <Compile Include="Commands\SaveCode.cs" />
     <Compile Include="Extensions\ElementExtension.cs" />
     <Compile Include="Filters\FoundationFilter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
