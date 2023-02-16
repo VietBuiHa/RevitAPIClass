@@ -48,8 +48,7 @@ namespace WpfControlLibrary1
                     {
                         Options options = new Options();
                         options.DetailLevel = ViewDetailLevel.Fine;
-                        options.ComputeReferences = false;
-                        GeometryElement geomElem = ele.get_Geometry(options);
+                        options.ComputeReferences = false;                       
 
                         //Get element intersection
                         var boundingBox = ele.get_BoundingBox(null);
@@ -72,6 +71,7 @@ namespace WpfControlLibrary1
 
                             //declare variable
                             int totalface1 = 0;
+                            int n = 0;
                             double totalArea1 = 0.0;
                             double totalArea2 = 0.0;
                             double totalAreaIntersect = 0.0;
@@ -79,6 +79,7 @@ namespace WpfControlLibrary1
                             double volumeOfIntersection = 0.0;
                             double areaOfIntersection = 0.0;
 
+                            GeometryElement geomElem = ele.get_Geometry(options);
                             //Get side face
                             if (geomElem != null)
                             {
@@ -127,44 +128,43 @@ namespace WpfControlLibrary1
                                                                         totalArea2 += face2.Area;                                                                        
                                                                     }
                                                                 }
-                                                            }
-                                                            
+                                                            }                                                            
 
                                                             Solid union = BooleanOperationsUtils.ExecuteBooleanOperation(solid1, solid2, BooleanOperationsType.Union);
-                                                            if (union != null)
+                                                            if (union.Volume != solid1.Volume && union.Volume != solid2.Volume && union != null)
                                                             {
-                                                                if (union.Volume != solid1.Volume && union.Volume != solid2.Volume)
+                                                                foreach (Face faceUnion in union.Faces)
                                                                 {
-                                                                    foreach (Face faceUnion in union.Faces)
+                                                                    PlanarFace planarUnion = faceUnion as PlanarFace;
+                                                                    if (planarUnion != null)
                                                                     {
-                                                                        PlanarFace planarUnion = faceUnion as PlanarFace;
-                                                                        if (planarUnion != null)
+                                                                        if (Math.Round(planarUnion.FaceNormal.Z, 2) == 0)
                                                                         {
-                                                                            if (Math.Round(planarUnion.FaceNormal.Z,2) == 0)
-                                                                            {
-                                                                                totalAreaUnion += faceUnion.Area;
-                                                                                
-                                                                            }
+                                                                            totalAreaUnion += faceUnion.Area;
+
                                                                         }
                                                                     }
-                                                                    //get DirectShape
-                                                                    //GeometryObject[] geosolid = new GeometryObject[] { union };
-                                                                    //DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_GenericModel));
-                                                                    //ds.SetShape(geosolid);
+                                                                }
+                                                                //get DirectShape
+                                                                GeometryObject[] geosolid = new GeometryObject[] { union };
+                                                                DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_GenericModel));
+                                                                ds.SetShape(geosolid);
+                                                                areaOfIntersection += ((totalArea1 + totalArea2 - totalAreaUnion) / 2);
+                                                                volumeOfIntersection = union.Volume;
+                                                                n++;
 
-                                                                    volumeOfIntersection = union.Volume;
-                                                                    
-                                                                }                                                                                                                            
-                                                            }                                                            
+                                                            }
                                                         }
-                                                    }
-                                                    areaOfIntersection += ((totalArea1 + totalArea2 - totalAreaUnion) / 2);
+                                                    }                                                    
                                                 }                                                
                                             }                                            
                                         }                                        
                                     }
                                 }
                                 
+
+                                ele.LookupParameter("TestV").Set(n.ToString());
+
                                 //areaOfIntersection = Math.Round(UnitUtils.Convert(areaOfIntersection, UnitTypeId.SquareFeet, UnitTypeId.SquareMeters), 3);
                                 ele.LookupParameter("TestA").Set(areaOfIntersection);
 
