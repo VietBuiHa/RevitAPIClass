@@ -46,70 +46,70 @@ namespace WpfControlLibrary1
                     tran.Start();
                     foreach (var ele in eles)
                     {
+                        //declare variable
+                        int totalface1 = 0;
+                        int n = 0;
+                        double totalArea1 = 0.0;
+                        double totalArea2 = 0.0;
+                        double totalAreaIntersect = 0.0;
+                        double totalAreaUnion = 0.0;
+                        double volumeOfIntersection = 0.0;
+                        double areaOfIntersection = 0.0;
+
                         Options options = new Options();
                         options.DetailLevel = ViewDetailLevel.Fine;
-                        options.ComputeReferences = false;                       
+                        options.ComputeReferences = false;
 
-                        //Get element intersection
-                        var boundingBox = ele.get_BoundingBox(null);
-                        if (boundingBox != null)
+                        GeometryElement geomElem = ele.get_Geometry(options);
+                        if (geomElem != null)
                         {
-                            //var solids = ele.GetSolids();
-                            var outline = new Outline(boundingBox.Min, boundingBox.Max);
-                            var filter = new BoundingBoxIntersectsFilter(outline);
-
-                            //Get elements with 2 condition
-                            var combine = new LogicalAndFilter(new List<ElementFilter>()
+                            foreach (var obj1 in geomElem)
                             {
-                                allelement,filter
-                            });
-
-                            var elesIntersect = new FilteredElementCollector(doc)
-                                .WhereElementIsNotElementType()
-                                .WherePasses(combine)
-                                .ToElements();
-
-                            //declare variable
-                            int totalface1 = 0;
-                            int n = 0;
-                            double totalArea1 = 0.0;
-                            double totalArea2 = 0.0;
-                            double totalAreaIntersect = 0.0;
-                            double totalAreaUnion = 0.0;
-                            double volumeOfIntersection = 0.0;
-                            double areaOfIntersection = 0.0;
-
-                            GeometryElement geomElem = ele.get_Geometry(options);
-                            //Get side face
-                            if (geomElem != null)
-                            {
-                                foreach (var obj1 in geomElem)
+                                //Get side face
+                                var solid1 = obj1 as Solid;
+                                if (solid1 != null)
                                 {
-                                    var solid1 = obj1 as Solid;
-                                    if (solid1 != null)
-                                    {                                       
-                                        foreach (Face face1 in solid1.Faces)
+                                    foreach (Face face1 in solid1.Faces)
+                                    {
+                                        PlanarFace planarFace1 = face1 as PlanarFace;
+                                        if (null != planarFace1)
                                         {
-                                            PlanarFace planarFace1 = face1 as PlanarFace;
-                                            if (null != planarFace1)
+                                            //XYZ origin = planarFace.Origin;
+                                            //XYZ normal = planarFace.FaceNormal;
+                                            //XYZ normal = planarFace.ComputeNormal(new UV(planarFace.Origin.X, planarFace.Origin.Y));
+                                            //XYZ vectorX = planarFace.XVector;
+                                            //XYZ vectorY = planarFace.YVector;
+                                            if (Math.Round(planarFace1.FaceNormal.Z, 2) == 0)
                                             {
-                                                //XYZ origin = planarFace.Origin;
-                                                //XYZ normal = planarFace.FaceNormal;
-                                                //XYZ normal = planarFace.ComputeNormal(new UV(planarFace.Origin.X, planarFace.Origin.Y));
-                                                //XYZ vectorX = planarFace.XVector;
-                                                //XYZ vectorY = planarFace.YVector;
-                                                if (Math.Round(planarFace1.FaceNormal.Z, 2) == 0)
-                                                {
-                                                    totalArea1 += face1.Area;
-                                                    totalface1++;
-                                                }
+                                                totalArea1 += face1.Area;
+                                                totalface1++;
                                             }
                                         }
-                                        foreach (var item in elesIntersect)
+                                    }
+                                    //Get element intersection
+                                    var boundingBox = ele.get_BoundingBox(null);
+                                    if (boundingBox != null)
+                                    {
+                                        //var solids = ele.GetSolids();
+                                        var outline = new Outline(boundingBox.Min, boundingBox.Max);
+                                        var filter = new BoundingBoxIntersectsFilter(outline);
+
+                                        //Get elements with 2 condition
+                                        var combine = new LogicalAndFilter(new List<ElementFilter>()
                                         {
-                                            if (item.Id.IntegerValue != ele.Id.IntegerValue)
+                                            allelement,filter
+                                        });
+
+                                        var elesIntersect = new FilteredElementCollector(doc)
+                                            .WhereElementIsNotElementType()
+                                            .WherePasses(combine)
+                                            .ToElements();
+
+                                        foreach (var eleI in elesIntersect)
+                                        {
+                                            if (eleI.Id.IntegerValue != ele.Id.IntegerValue)
                                             {
-                                                GeometryElement geomElemI = item.get_Geometry(options);
+                                                GeometryElement geomElemI = eleI.get_Geometry(options);
                                                 if (geomElemI != null)
                                                 {
                                                     foreach (var obj2 in geomElemI)
@@ -117,22 +117,21 @@ namespace WpfControlLibrary1
                                                         var solid2 = obj2 as Solid;
                                                         if (solid2 != null)
                                                         {
-                                                            //Get area surface of solid2
-                                                            foreach (Face face2 in solid2.Faces)
-                                                            {
-                                                                PlanarFace planarFace2 = face2 as PlanarFace;
-                                                                if (null != planarFace2)
-                                                                {                                                                    
-                                                                    if (Math.Round(planarFace2.FaceNormal.Z, 2) == 0)
-                                                                    {
-                                                                        totalArea2 += face2.Area;                                                                        
-                                                                    }
-                                                                }
-                                                            }                                                            
-
                                                             Solid union = BooleanOperationsUtils.ExecuteBooleanOperation(solid1, solid2, BooleanOperationsType.Union);
                                                             if (union.Volume != solid1.Volume && union.Volume != solid2.Volume && union != null)
                                                             {
+                                                                //Get area surface of solid2
+                                                                foreach (Face face2 in solid2.Faces)
+                                                                {
+                                                                    PlanarFace planarFace2 = face2 as PlanarFace;
+                                                                    if (null != planarFace2)
+                                                                    {
+                                                                        if (Math.Round(planarFace2.FaceNormal.Z, 2) == 0)
+                                                                        {
+                                                                            totalArea2 += face2.Area;
+                                                                        }
+                                                                    }
+                                                                }
                                                                 foreach (Face faceUnion in union.Faces)
                                                                 {
                                                                     PlanarFace planarUnion = faceUnion as PlanarFace;
@@ -140,44 +139,43 @@ namespace WpfControlLibrary1
                                                                     {
                                                                         if (Math.Round(planarUnion.FaceNormal.Z, 2) == 0)
                                                                         {
-                                                                            totalAreaUnion += faceUnion.Area;
-
+                                                                            totalAreaUnion += faceUnion.Area;                                                                            
                                                                         }
                                                                     }
                                                                 }
-                                                                //get DirectShape
-                                                                GeometryObject[] geosolid = new GeometryObject[] { union };
-                                                                DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_GenericModel));
-                                                                ds.SetShape(geosolid);
-                                                                areaOfIntersection += ((totalArea1 + totalArea2 - totalAreaUnion) / 2);
+                                                                ////get DirectShape
+                                                                //GeometryObject[] geosolid = new GeometryObject[] { union };
+                                                                //DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_GenericModel));
+                                                                //ds.SetShape(geosolid);
                                                                 volumeOfIntersection = union.Volume;
-                                                                n++;
 
-                                                            }
-                                                        }
+                                                                areaOfIntersection = (totalArea1 + totalArea2 - totalAreaUnion) / 2;
+                                                                n++;
+                                                            }                                                            
+                                                        }                                                        
                                                     }                                                    
                                                 }                                                
                                             }                                            
                                         }                                        
-                                    }
+                                    }                                    
                                 }
-                                
-
-                                ele.LookupParameter("TestV").Set(n.ToString());
-
-                                //areaOfIntersection = Math.Round(UnitUtils.Convert(areaOfIntersection, UnitTypeId.SquareFeet, UnitTypeId.SquareMeters), 3);
-                                ele.LookupParameter("TestA").Set(areaOfIntersection);
-
-                                volumeOfIntersection = Math.Round(volumeOfIntersection, 3);
-                                ele.LookupParameter("Test Volume").Set(volumeOfIntersection);
-
-                                //All
-                                totalArea1 = Math.Round(UnitUtils.Convert(totalArea1, UnitTypeId.SquareFeet, UnitTypeId.SquareMeters), 3);
-                                //totalArea1 = Math.Floor(UnitUtils.Convert(totalArea1, UnitTypeId.SquareFeet, UnitTypeId.SquareMeters));
-                                ele.LookupParameter("Comments").Set(totalArea1.ToString());
-                                ele.LookupParameter("Mark").Set(totalface1.ToString());
                             }
-                        }                   
+                        }
+
+                        totalAreaIntersect += areaOfIntersection;
+                        ele.LookupParameter("TestV").Set(n.ToString());
+
+                        //areaOfIntersection = Math.Round(UnitUtils.Convert(areaOfIntersection, UnitTypeId.SquareFeet, UnitTypeId.SquareMeters), 3);
+                        ele.LookupParameter("TestA").Set(totalAreaIntersect);
+
+                        volumeOfIntersection = Math.Round(volumeOfIntersection, 3);
+                        ele.LookupParameter("Test Volume").Set(volumeOfIntersection);
+
+                        //All
+                        totalArea1 = Math.Round(UnitUtils.Convert(totalArea1, UnitTypeId.SquareFeet, UnitTypeId.SquareMeters), 3);
+                        //totalArea1 = Math.Floor(UnitUtils.Convert(totalArea1, UnitTypeId.SquareFeet, UnitTypeId.SquareMeters));
+                        ele.LookupParameter("Comments").Set(totalArea1.ToString());
+                        ele.LookupParameter("Mark").Set(totalface1.ToString());
                     }
                     tran.Commit();
                 }
