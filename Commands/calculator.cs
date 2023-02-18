@@ -53,6 +53,7 @@ namespace WpfControlLibrary1
                         double totalAreaIntersect = 0.0;
                         double areaOfIntersection = 0.0;
                         double volumeOfIntersection = 0.0;
+                        double AreaFormworkSide = 0.0;
 
                         Options options = new Options();
                         options.DetailLevel = ViewDetailLevel.Fine;
@@ -164,22 +165,28 @@ namespace WpfControlLibrary1
                                 }
                             }
                         }
-
-                        totalAreaIntersect += areaOfIntersection;
+                        
                         ele.LookupParameter("TestV").Set(n.ToString());
 
+                        //Get all area of all face intersection
+                        totalAreaIntersect += areaOfIntersection;
                         //areaOfIntersection = Math.Round(UnitUtils.Convert(areaOfIntersection, UnitTypeId.SquareFeet, UnitTypeId.SquareMeters), 3);
                         ele.LookupParameter("TestA").Set(totalAreaIntersect);
 
                         
                         volumeOfIntersection = Math.Round(volumeOfIntersection, 3);
-                        ele.LookupParameter("Test Volume").Set(volumeOfIntersection);
+                        ele.LookupParameter("Test Volume").Set(volumeOfIntersection);                        
 
-                        //All
+                        //Calculator Area Formwork Side
+                        AreaFormworkSide = totalArea1 - totalAreaIntersect;
+                        ele.LookupParameter("Area Formwork Side").Set(AreaFormworkSide);
+
+                        //All of surface
                         totalArea1 = Math.Round(UnitUtils.Convert(totalArea1, UnitTypeId.SquareFeet, UnitTypeId.SquareMeters), 3);
                         //totalArea1 = Math.Floor(UnitUtils.Convert(totalArea1, UnitTypeId.SquareFeet, UnitTypeId.SquareMeters));
                         ele.LookupParameter("Comments").Set(totalArea1.ToString());
                         ele.LookupParameter("Mark").Set(totalface1.ToString());
+
                     }
                     tran.Commit();
                 }
