@@ -49,7 +49,8 @@ namespace WpfControlLibrary1
                         //declare variable
                         int n = 0;
                         int totalface1 = 0;                        
-                        double totalArea1 = 0.0;                        
+                        double totalArea1 = 0.0;
+                        double totalAreaBot1 = 0.0;
                         double totalAreaIntersect = 0.0;
                         double areaOfIntersection = 0.0;
                         double volumeOfIntersection = 0.0;
@@ -82,6 +83,10 @@ namespace WpfControlLibrary1
                                             {
                                                 totalArea1 += face1.Area;
                                                 totalface1++;
+                                            }
+                                            if (Math.Round(planarFace1.FaceNormal.Z, 2) == -1)
+                                            {
+                                                totalAreaBot1 += face1.Area;                                                
                                             }
                                         }
                                     }
@@ -181,12 +186,15 @@ namespace WpfControlLibrary1
                         AreaFormworkSide = totalArea1 - totalAreaIntersect;
                         ele.LookupParameter("Area Formwork Side").Set(AreaFormworkSide);
 
-                        //All of surface
+                        //All side face
                         totalArea1 = Math.Round(UnitUtils.Convert(totalArea1, UnitTypeId.SquareFeet, UnitTypeId.SquareMeters), 3);
                         //totalArea1 = Math.Floor(UnitUtils.Convert(totalArea1, UnitTypeId.SquareFeet, UnitTypeId.SquareMeters));
                         ele.LookupParameter("Comments").Set(totalArea1.ToString());
                         ele.LookupParameter("Mark").Set(totalface1.ToString());
 
+                        //All Bottom face
+                        totalAreaBot1 = Math.Round(totalAreaBot1, 3);
+                        ele.LookupParameter("AreaBot").Set(totalAreaBot1);
                     }
                     tran.Commit();
                 }
