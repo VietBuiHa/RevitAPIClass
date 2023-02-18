@@ -84,7 +84,7 @@ namespace WpfControlLibrary1
                                                 totalArea1 += face1.Area;
                                                 totalface1++;
                                             }
-                                            if (Math.Round(planarFace1.FaceNormal.Z, 2) == -1)
+                                            else
                                             {
                                                 totalAreaBot1 += face1.Area;                                                
                                             }
@@ -125,7 +125,9 @@ namespace WpfControlLibrary1
                                                             if (union.Volume != solid1.Volume && union.Volume != solid2.Volume && union != null)
                                                             {
                                                                 double totalArea2 = 0.0;
+                                                                double totalAreaBot2 = 0.0;
                                                                 double totalAreaUnion = 0.0;
+                                                                double totalAreaUnionBot = 0.0;
                                                                 double volumeInt = 0.0;
                                                                 //Get area surface of solid2
                                                                 foreach (Face face2 in solid2.Faces)
@@ -134,9 +136,12 @@ namespace WpfControlLibrary1
                                                                     if (null != planarFace2)
                                                                     {
                                                                         if (Math.Round(planarFace2.FaceNormal.Z, 2) == 0)
-                                                                        {
-                                                                            
+                                                                        {                                                                            
                                                                             totalArea2 += face2.Area;
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            totalAreaBot2 += face2.Area;
                                                                         }
                                                                     }
                                                                 }
@@ -146,9 +151,12 @@ namespace WpfControlLibrary1
                                                                     if (planarUnion != null)
                                                                     {
                                                                         if (Math.Round(planarUnion.FaceNormal.Z, 2) == 0)
-                                                                        {
-                                                                            
+                                                                        {                                                                            
                                                                             totalAreaUnion += faceUnion.Area;                                                                            
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            totalAreaUnionBot += faceUnion.Area;
                                                                         }
                                                                     }
                                                                 }
