@@ -120,6 +120,7 @@ namespace WpfControlLibrary1
                                                             {
                                                                 double totalArea2 = 0.0;
                                                                 double totalAreaUnion = 0.0;
+                                                                double volumeInt = 0.0;
                                                                 //Get area surface of solid2
                                                                 foreach (Face face2 in solid2.Faces)
                                                                 {
@@ -149,8 +150,8 @@ namespace WpfControlLibrary1
                                                                 //GeometryObject[] geosolid = new GeometryObject[] { union };
                                                                 //DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_GenericModel));
                                                                 //ds.SetShape(geosolid);
-                                                                volumeOfIntersection = union.Volume;
-
+                                                                volumeInt += union.Volume;
+                                                                volumeOfIntersection += volumeInt;
                                                                 areaOfIntersection += (totalArea1 + totalArea2 - totalAreaUnion) / 2;
                                                                 n++;
                                                             }                                                            
@@ -170,6 +171,7 @@ namespace WpfControlLibrary1
                         //areaOfIntersection = Math.Round(UnitUtils.Convert(areaOfIntersection, UnitTypeId.SquareFeet, UnitTypeId.SquareMeters), 3);
                         ele.LookupParameter("TestA").Set(totalAreaIntersect);
 
+                        
                         volumeOfIntersection = Math.Round(volumeOfIntersection, 3);
                         ele.LookupParameter("Test Volume").Set(volumeOfIntersection);
 
