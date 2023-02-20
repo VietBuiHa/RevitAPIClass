@@ -35,6 +35,7 @@ namespace WpfControlLibrary1
                     new ElementCategoryFilter(BuiltInCategory.OST_Floors),
                     new ElementCategoryFilter(BuiltInCategory.OST_Walls),
                     new ElementCategoryFilter(BuiltInCategory.OST_GenericModel),
+                    new ElementCategoryFilter(BuiltInCategory.OST_StructuralFoundation),
                 });
                 var eles = new FilteredElementCollector(doc)
                     .WherePasses(allelement)
@@ -50,9 +51,10 @@ namespace WpfControlLibrary1
                         int n = 0;
                         int totalface1 = 0;                        
                         double totalArea1 = 0.0;
-                        double totalAreaBot1 = 0.0;
+                        double totalAreaTBot1 = 0.0;
                         double totalAreaIntersect = 0.0;
                         double areaOfIntersection = 0.0;
+                        double areaOfIntersectionTBot = 0.0;
                         double volumeOfIntersection = 0.0;
                         double AreaFormworkSide = 0.0;
 
@@ -86,7 +88,7 @@ namespace WpfControlLibrary1
                                             }
                                             else
                                             {
-                                                totalAreaBot1 += face1.Area;                                                
+                                                totalAreaTBot1 += face1.Area;                                                
                                             }
                                         }
                                     }
@@ -125,9 +127,9 @@ namespace WpfControlLibrary1
                                                             if (union.Volume != solid1.Volume && union.Volume != solid2.Volume && union != null)
                                                             {
                                                                 double totalArea2 = 0.0;
-                                                                double totalAreaBot2 = 0.0;
+                                                                double totalAreaTBot2 = 0.0;
                                                                 double totalAreaUnion = 0.0;
-                                                                double totalAreaUnionBot = 0.0;
+                                                                double totalAreaUnionTBot = 0.0;
                                                                 double volumeInt = 0.0;
                                                                 //Get area surface of solid2
                                                                 foreach (Face face2 in solid2.Faces)
@@ -141,7 +143,7 @@ namespace WpfControlLibrary1
                                                                         }
                                                                         else
                                                                         {
-                                                                            totalAreaBot2 += face2.Area;
+                                                                            totalAreaTBot2 += face2.Area;
                                                                         }
                                                                     }
                                                                 }
@@ -156,7 +158,7 @@ namespace WpfControlLibrary1
                                                                         }
                                                                         else
                                                                         {
-                                                                            totalAreaUnionBot += faceUnion.Area;
+                                                                            totalAreaUnionTBot += faceUnion.Area;
                                                                         }
                                                                     }
                                                                 }
@@ -167,6 +169,39 @@ namespace WpfControlLibrary1
                                                                 volumeInt += union.Volume;
                                                                 volumeOfIntersection += volumeInt;
                                                                 areaOfIntersection += (totalArea1 + totalArea2 - totalAreaUnion) / 2;
+                                                                //areaOfIntersectionTBot += (totalAreaTBot1 + totalAreaTBot2 - totalAreaUnionTBot) / 4;
+
+                                                                foreach (Face face1 in solid1.Faces)
+                                                                {
+                                                                    PlanarFace planarFace1 = face1 as PlanarFace;
+                                                                    if (null != planarFace1)
+                                                                    {                                                                        
+                                                                        if (Math.Round(planarFace1.FaceNormal.Z, 2) == -1)
+                                                                        {
+                                                                            double totalAreaBot2 = 0.0;
+                                                                            foreach (Face face2 in solid2.Faces)
+                                                                            {
+                                                                                PlanarFace planarFace2 = face2 as PlanarFace;
+                                                                                if (null != planarFace2)
+                                                                                {
+                                                                                    if (Math.Round(planarFace2.FaceNormal.Z, 2) != 0)
+                                                                                    {
+                                                                                        if (planarFace1.Intersect(planarFace2, out Curve curve) == FaceIntersectionFaceResult.Intersecting)
+                                                                                        {
+                                                                                            areaOfIntersectionTBot += (totalAreaTBot1 + totalAreaTBot2 - totalAreaUnionTBot) / 4;
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            areaOfIntersectionTBot = 0;
+                                                                                        }
+                                                                                    }                                                                                    
+                                                                                }
+                                                                            }
+                                                                        }                                                                        
+                                                                    }
+                                                                }
+                                                                areaOfIntersectionTBot += (totalAreaTBot1 + totalAreaTBot2 - totalAreaUnionTBot) / 4 + areaOfIntersectionTBot;
+
                                                                 n++;
                                                             }                                                            
                                                         }                                                        
@@ -181,12 +216,16 @@ namespace WpfControlLibrary1
                         
                         ele.LookupParameter("TestV").Set(n.ToString());
 
-                        //Get all area of all face intersection
+                        //Get all area of all side face intersection
                         totalAreaIntersect += areaOfIntersection;
                         //areaOfIntersection = Math.Round(UnitUtils.Convert(areaOfIntersection, UnitTypeId.SquareFeet, UnitTypeId.SquareMeters), 3);
                         ele.LookupParameter("TestA").Set(totalAreaIntersect);
 
-                        
+                        //Get all area of all bottom face intersection
+                        areaOfIntersectionTBot += areaOfIntersectionTBot;
+                        //areaOfIntersectionTBot = Math.Round(UnitUtils.Convert(areaOfIntersectionTBot, UnitTypeId.SquareFeet, UnitTypeId.SquareMeters), 3);
+                        ele.LookupParameter("AreaBotIntersect").Set(areaOfIntersectionTBot);
+
                         volumeOfIntersection = Math.Round(volumeOfIntersection, 3);
                         ele.LookupParameter("Test Volume").Set(volumeOfIntersection);                        
 
@@ -201,8 +240,8 @@ namespace WpfControlLibrary1
                         ele.LookupParameter("Mark").Set(totalface1.ToString());
 
                         //All Bottom face
-                        totalAreaBot1 = Math.Round(totalAreaBot1, 3);
-                        ele.LookupParameter("AreaBot").Set(totalAreaBot1);
+                        totalAreaTBot1 = Math.Round(totalAreaTBot1, 3);
+                        ele.LookupParameter("AreaBot").Set(totalAreaTBot1);
                     }
                     tran.Commit();
                 }
