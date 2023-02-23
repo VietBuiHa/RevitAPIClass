@@ -131,6 +131,7 @@ namespace WpfControlLibrary1
                                                                 double totalAreaUnion = 0.0;
                                                                 double totalAreaUnionTBot = 0.0;
                                                                 double volumeInt = 0.0;
+                                                                
                                                                 //Get area surface of solid2
                                                                 foreach (Face face2 in solid2.Faces)
                                                                 {
@@ -171,14 +172,14 @@ namespace WpfControlLibrary1
                                                                 areaOfIntersection += (totalArea1 + totalArea2 - totalAreaUnion) / 2;
                                                                 //areaOfIntersectionTBot += (totalAreaTBot1 + totalAreaTBot2 - totalAreaUnionTBot) / 4;
 
+                                                                double totalAreaBot2 = 0.0;
                                                                 foreach (Face face1 in solid1.Faces)
                                                                 {
                                                                     PlanarFace planarFace1 = face1 as PlanarFace;
                                                                     if (null != planarFace1)
                                                                     {                                                                        
                                                                         if (Math.Round(planarFace1.FaceNormal.Z, 2) == -1)
-                                                                        {
-                                                                            double totalAreaBot2 = 0.0;
+                                                                        {                                                                            
                                                                             foreach (Face face2 in solid2.Faces)
                                                                             {
                                                                                 PlanarFace planarFace2 = face2 as PlanarFace;
@@ -188,20 +189,21 @@ namespace WpfControlLibrary1
                                                                                     {
                                                                                         if (planarFace1.Intersect(planarFace2, out Curve curve) == FaceIntersectionFaceResult.Intersecting)
                                                                                         {
-                                                                                            areaOfIntersectionTBot += (totalAreaTBot1 + totalAreaTBot2 - totalAreaUnionTBot) / 4;
+                                                                                            totalAreaBot2 += (totalAreaTBot1 + totalAreaTBot2 - totalAreaUnionTBot) / 4;
                                                                                         }
                                                                                         else
                                                                                         {
-                                                                                            areaOfIntersectionTBot = 0;
+                                                                                            totalAreaBot2 += totalAreaBot2;
                                                                                         }
+                                                                                        totalAreaBot2 += totalAreaBot2;
                                                                                     }                                                                                    
                                                                                 }
-                                                                            }
+                                                                            }                                                                            
                                                                         }                                                                        
                                                                     }
                                                                 }
-                                                                areaOfIntersectionTBot += (totalAreaTBot1 + totalAreaTBot2 - totalAreaUnionTBot) / 4 + areaOfIntersectionTBot;
-
+                                                                areaOfIntersectionTBot += totalAreaBot2;
+                                                                //areaOfIntersectionTBot += areaOfIntersectionTBot;
                                                                 n++;
                                                             }                                                            
                                                         }                                                        
