@@ -113,7 +113,7 @@ namespace WpfControlLibrary1
 
                                         foreach (var eleI in elesIntersect)
                                         {
-                                            if (eleI.Id.IntegerValue != ele.Id.IntegerValue)
+                                            if (eleI.Id != ele.Id)
                                             {
                                                 GeometryElement geomElemI = eleI.get_Geometry(options);
                                                 if (geomElemI != null)
