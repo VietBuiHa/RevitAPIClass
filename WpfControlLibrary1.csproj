@@ -39,8 +39,8 @@
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Aspose.Cells, Version=22.12.0.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
-      <HintPath>packages\Aspose.Cells.22.12.0\lib\net40\Aspose.Cells.dll</HintPath>
+    <Reference Include="Aspose.Cells, Version=23.9.0.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
+      <HintPath>packages\Aspose.Cells.23.9.0\lib\net40\Aspose.Cells.dll</HintPath>
     </Reference>
     <Reference Include="Aspose.Cells.Cloud.SDK, Version=23.9.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\Aspose.Cells-Cloud.23.9.0\lib\net452\Aspose.Cells.Cloud.SDK.dll</HintPath>
